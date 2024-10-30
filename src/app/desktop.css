@@ -1,0 +1,324 @@
+#Desktop{
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--background);
+}
+#githubIcon{
+    position: absolute;
+    top: 5%;
+    right: 64px;
+    z-index: 0;
+    cursor: url("/desktopEmulationAssets/pointer-clickable.png"), auto;
+}
+.clickable{
+    cursor: url("/desktopEmulationAssets/pointer-clickable.png"), auto;
+}
+#linkedInIcon{
+    position: absolute;
+    top: 5%;
+    right: 128px;
+    z-index: 0;
+    cursor: url("/desktopEmulationAssets/pointer-clickable.png"), auto;
+}
+#bounceGateIcon{
+    position: relative;
+}
+.closeButton{
+    position: absolute;
+    cursor: url("/desktopEmulationAssets/pointer-clickable.png"), auto;
+    background-image: url("/desktopEmulationAssets/close-button.png");
+    height: 16px;
+    width: 16px;
+    background-size: cover;
+    z-index: 3;
+    background-color: transparent;
+    border: none;
+    left: 25px;
+    top: 7px;
+}
+.closeButton:hover{
+    background-image: url("/desktopEmulationAssets/close-button-hover.png");
+}
+.maximizeButton{
+    position: absolute;
+    cursor: url("/desktopEmulationAssets/pointer-clickable.png"), auto;
+    background-image: url("/desktopEmulationAssets/maximize-button.png");
+    height: 16px;
+    width: 16px;
+    background-size: cover;
+    z-index: 3;
+    background-color: transparent;
+    border: none;
+    left: 45px;
+    top: 7px;
+}
+.maximizeButton:hover{
+    background-image: url("/desktopEmulationAssets/maximize-button-hover.png");
+}
+.minimizeButton{
+    position: absolute;
+    cursor: url("/desktopEmulationAssets/pointer-clickable.png"), auto;
+    background-image: url("/desktopEmulationAssets/maximize-button.png");
+    height: 16px;
+    width: 16px;
+    background-size: cover;
+    z-index: 3;
+    background-color: transparent;
+    border: none;
+    left: 45px;
+    top: 7px;
+}
+.minimizeButton:hover{
+    background-image: url("/desktopEmulationAssets/minimize-button-hover.png");
+}
+.icon {
+    cursor: url("/desktopEmulationAssets/pointer-clickable.png"), auto;
+    position: absolute;
+    padding: 7px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.iconContainer .icon{
+    cursor: url("/desktopEmulationAssets/pointer-clickable.png"), auto;
+    position: relative;
+    width: 64px;
+}
+.icon img{
+    pointer-events: none;
+}
+.icon h1{
+    font-size: small;
+    text-align: center;
+    padding: 0%;
+
+    line-height: 10px;
+    margin-top: -5px;    /* CORRECTION FOR LINE-HEIGHT */
+}
+.iconContainer{
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+#welcomeWindow{
+    left: 5px;
+    top: 90px;
+}
+
+#mingleLauncher{
+    left: 85px;
+    top: 5px;
+}
+#projects{
+    left: 6px;
+    top: 5px;
+}
+#ComputerVision{
+    left:6px;
+    top:186px;
+}
+.moving {
+    cursor: url("/desktopEmulationAssets/pointer-move.png"), move;
+}
+.resizingTop{
+    cursor: url("/desktopEmulationAssets/pointer-vert-resize.png") 6 11, row-resize;
+}
+.mover{
+    position: absolute;
+    z-index: 1;
+}
+.window {
+    position: absolute;
+    border-radius: 3px;
+    width: 860px;
+    height: 440px;
+    min-height: 280px;
+    min-width: 280px;
+}
+.windowHead{
+    position: relative;
+    height: 30px;
+    top: var(--resizer-thickness);
+    cursor: url("/desktopEmulationAssets/pointer-move.png"), move;
+    width: 100%;
+}
+.windowHead h1{
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+    top: 1rem;
+    font-size: small;
+    color: aliceblue;
+    line-height: 15%;
+    z-index: 2;
+    pointer-events: none;
+    margin: 0;
+}
+.windowHeadBorder{
+    position:absolute;
+    z-index: 0;
+    height: 100%;
+    bottom: 0;
+    pointer-events: none;
+}
+.windowHeadBorderMid{
+    left: 5%;
+    width: 90%
+}
+.windowHeadBorderRight{
+    right: 0;
+}
+.windowHeadBorderLeft{
+    left: 0;
+}
+.resizer{
+    position: inherit;
+    background-color: black;
+}
+.resizer-r{
+    cursor: url("/desktopEmulationAssets/pointer-horz-resize.png") 11 11, col-resize;
+    height: calc(100% - 40px);
+    right: 0;
+    top: 30px;
+    width: var(--resizer-thickness);
+}
+.resizer-t{
+    cursor: url("/desktopEmulationAssets/pointer-vert-resize.png") 6 11, row-resize;
+    width: calc(100% - 26px);
+    left: 13px;
+    top: 2;
+    height: var(--resizer-thickness);
+}
+.resizer-l{
+    cursor: url("/desktopEmulationAssets/pointer-horz-resize.png") 11 11, col-resize;
+    height: calc(100% - 40px);
+    left: 0;
+    top: 30px;
+    width: var(--resizer-thickness);
+}
+.resizer-b{
+    cursor: url("/desktopEmulationAssets/pointer-vert-resize.png") 6 11, row-resize;
+    width: calc(100% - 20px);
+    left: 10px;
+    bottom: 0;
+    height: var(--resizer-thickness);
+}
+.resizer-tl{
+    cursor: url("/desktopEmulationAssets/pointer-topLeftBotRight-resize.png") 0 0, nw-resize;
+    height: 20px;
+    width: 20px;
+    left: -7px;
+    top: 0px;
+    border: none;
+    background-color: transparent;
+}
+.resizer-tr{
+    cursor: url("/desktopEmulationAssets/pointer-topRightBotLeft-resize.png") 0 0, ne-resize;
+    height: 20px;
+    width: 20px;
+    right: -7px;
+    top: 0px;
+    border: none;
+    background-color: transparent;
+}
+.resizer-br{
+    cursor: url("/desktopEmulationAssets/pointer-topLeftBotRight-resize.png") 0 0, nw-resize;
+    height: 20px;
+    width: 20px;
+    right: -5px;
+    bottom: -5px;
+    border: none;
+    background-color: transparent;
+}
+.resizer-bl{
+    cursor: url("/desktopEmulationAssets/pointer-topRightBotLeft-resize.png") 0 0, ne-resize;
+    height: 20px;
+    width: 20px;
+    left: -5px;
+    bottom: -5px;
+    border: none;
+    background-color: transparent;
+}
+.windowBorderLeft{
+    position: absolute;
+    width: 20px;
+    height: calc(100% - 40px - var(--resizer-thickness));
+    top: 30px;
+    left: 2.5px;
+}
+.windowBorderRight{
+    position: absolute;
+    width: 20px;
+    height: calc(100% - 40px - var(--resizer-thickness));
+    top: 30px;
+    right: 2.5px;
+}
+.windowBorderBottomContainer{
+    position: absolute;
+    bottom: 0;
+    height: 15px;
+    width: 100%;
+    pointer-events: none;
+}
+.windowBorderBottom{
+    position: absolute;
+    left: 10px;
+    width: calc(100% - 20px);
+    height: 75%;
+    bottom: var(--resizer-thickness);
+}
+.windowBorderBottomLeft{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 90%;
+}
+.windowBorderBottomRight{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: 90%;
+}
+.windowContents{
+    position: absolute;
+    display: inline;
+    height: calc(100% - 45.5px);
+    width: calc(100% - 25px);
+    left: 12.5px;
+    top: 32px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: lightgray;
+
+    border-radius: 5px;
+    border: 3px solid black;
+}
+
+.hidden {
+    display: none;
+    pointer-events: none;
+}
+.decor{
+    pointer-events: none;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+  
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
