@@ -80,7 +80,7 @@
     align-items: center;
     text-align: center;
 }
-.iconContainer .icon{
+#Desktop .icon{
     cursor: url("/desktopEmulationAssets/pointer-clickable.png"), auto;
     position: relative;
     width: 64px;
@@ -96,11 +96,7 @@
     line-height: 10px;
     margin-top: -5px;    /* CORRECTION FOR LINE-HEIGHT */
 }
-.iconContainer{
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-}
+
 #welcomeWindow{
     left: 5px;
     top: 90px;

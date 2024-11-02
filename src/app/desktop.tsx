@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useMemo } from "react";
+import React, { memo, useMemo, useRef } from "react";
 import { WindowDiv, WindowProps, maxDimensionsOffset, defaultDimensions, defaultPosition, maximizedPosition, ZIndexDict, WindowState, getWindowCenter } from "./windowdiv/window";
 import { Folder, Html, Pdf } from "./windowdiv/filetypes"
 import { LandingWindow, LandingWindowProps } from "./windowdiv/windows/landingpage";
@@ -12,7 +12,20 @@ interface DesktopState {
     };
     zIndexes: ZIndexDict;
 }
-const TestWindow = React.memo( ({ zIndex, setZindex }: { zIndex: number, setZindex: () => void }) => {
+const normalizeZIndexes = () : number => {
+    const allWindows = Array.from(document.querySelectorAll('.mover') as NodeListOf<HTMLElement>);
+
+    const sortedWindows = allWindows.sort((a, b) => parseInt(a.style.zIndex) - parseInt(b.style.zIndex));
+
+    let idx = 0;
+    sortedWindows.forEach((win) => {
+        win.style.zIndex = (idx).toString();
+        idx++;
+    });
+    return idx--;
+};
+
+const TestWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
     const startState : WindowState = {
         name: 'test',
         windowShown: true,
@@ -32,15 +45,26 @@ const TestWindow = React.memo( ({ zIndex, setZindex }: { zIndex: number, setZind
                 })
             }, [windowState]),
 
-        guts: () => {return(<p>hello</p>)},
+        guts: () => {return(<div>
+            <p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p>
+            <p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p>
+            <p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p>
+            <p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p>
+            <p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p>
+            <p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p>
+            <p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p>
+            <p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p>
+            <p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p>
+            </div>)},
 
         saveWindowState: (newState : WindowState) => {
             setWindowState(newState)
         },
 
-        zIndex: zIndex,
         forceFullScreen: false,
         state: windowState,
+
+        getMaxZ: getMaxZ,
     }
 
     const open = () => {
@@ -60,7 +84,7 @@ const TestWindow = React.memo( ({ zIndex, setZindex }: { zIndex: number, setZind
     )
 });
 
-const TestWindow2 = React.memo( ({ zIndex, setZindex }: { zIndex: number, setZindex: () => void }) => {
+const TestWindow2 = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
     const startState : WindowState = {
         name: 'test2',
         windowShown: true,
@@ -86,9 +110,10 @@ const TestWindow2 = React.memo( ({ zIndex, setZindex }: { zIndex: number, setZin
             setWindowState(newState)
         },
 
-        zIndex: zIndex,
         forceFullScreen: false,
         state: windowState,
+
+        getMaxZ: getMaxZ,
     }
 
     const open = () => {
@@ -112,28 +137,22 @@ const TestWindowIcon = ({open, name} : {open : () => void, name: string}) => {
     return <Html name={name} onDoubleClick={() => open()}/>
 }
 
-//const fabricateWindowProps = (windowKey: string, guts: () => JSX.Element) : WindowProps => {
-    //const props: WindowProps = {
-        //closeWindow: React.useCallback(() => {updateWindowShown(windowKey, false)}, []),
-        //guts: guts,
-        //zIndexes: this.state.zIndexes,
-        //updateZ: React.useCallback((indexDict) => {setNewZIndex(indexDict)}, []),
-        //updateWidth: React.useCallback((newWidth: number) => {updateWindowWidth(windowKey, newWidth)}, []),
-        //updateHeight: React.useCallback((newHeight: number) => {updateWindowHeight(windowKey, newHeight)}, []),
-        //setPos: React.useCallback((newPos : {x: number, y:number}) => {updateWindowPosition(windowKey, newPos)}, []),
-        //forceFullScreen: false,
-        //state: this.state.windows[windowKey],
-        //updateScroll: React.useCallback((newScroll: number) => {updateWindowScroll(windowKey, newScroll)}, [])
-    //}
-
-    //return props;
-//}
-
 export const Desktop = () => {
+    const maxZ = useRef<number>(0);
+
+    const getMaxZ = (): number => {
+        if(maxZ.current >= 5){
+            maxZ.current = normalizeZIndexes();
+        }
+
+        maxZ.current++;
+        return maxZ.current;
+    }
+
     return(
         <div id='Desktop'>
-            <TestWindow zIndex={0} setZindex={() => {}}/>
-            <TestWindow2 zIndex={0} setZindex={() => {}}/>
+            <TestWindow getMaxZ={getMaxZ} />
+            <TestWindow2 getMaxZ={getMaxZ} />
         </div>
     )
 }

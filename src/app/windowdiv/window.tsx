@@ -24,10 +24,10 @@ export type WindowState = {
 export type WindowProps = {
     closeWindow: () => void;
     guts: () => JSX.Element;
-    zIndex: number;
     saveWindowState: (arg : WindowState) => void;
     forceFullScreen: boolean;
     state : WindowState;
+    getMaxZ: () => number;
 };
 
 export const getWindowCenter = (windowState : WindowState) : {x: number, y: number} => {
@@ -42,7 +42,7 @@ export const getWindowCenter = (windowState : WindowState) : {x: number, y: numb
 
 export const WindowDiv = React.memo((props: WindowProps) => {
     const [isClient, setIsClient] = useState(false);
-    
+
     const moverRef = React.createRef<HTMLDivElement>();
     const windowRef = React.createRef<HTMLDivElement>();
 
@@ -64,33 +64,6 @@ export const WindowDiv = React.memo((props: WindowProps) => {
     const pairName = props.state.name;
     const Guts=props.guts;
 
-    // come back to this
-    //const zIndexes=props.zIndexes;
-
-    //const updateWidth = () => {
-        //if(windowRef.current){
-            //const styles = window.getComputedStyle(windowRef.current);
-            //props.updateWidth(parseInt(styles.width,10));
-            //props.updateScroll(scroll);
-        //}
-    //}
-    //const updateHeight = () =>{
-        //if(windowRef.current){
-            //const styles = window.getComputedStyle(windowRef.current);
-            //props.updateHeight(parseInt(styles.height,10));
-            //props.updateScroll(scroll);
-        //}
-    //}
-
-    //const updatePositions = () =>{
-        //const moverMounted = moverRef.current;
-        //if(moverMounted){
-            //const styles = window.getComputedStyle(moverMounted);
-            //let newPos = {x:getNumFromPx(styles.left), y:getNumFromPx(styles.top)};
-            //props.setPos(newPos);
-            //props.updateScroll(scroll);
-        //}
-    //}
 
     const getState = () : WindowState => {
         const moverMounted = moverRef.current;
@@ -270,10 +243,12 @@ export const WindowDiv = React.memo((props: WindowProps) => {
             }
 
             if(dy<0){ //calculate moving up and down separately
+
                 if(outOfBoundsY >= 0 && outOfBoundsY <= maxY && e.clientY < maxY - height + headerOffset){//not out of bounds on top
                     outOfBoundsY -= y1; //update outOfBounds tracker
                     elmnt.style.top = (elmnt.offsetTop - y1) + "px";//update pos
                 }
+
             }else if(dy>0){
                 if(outOfBoundsY <= maxY - height && outOfBoundsY >= 0 && e.clientY - headerOffset > 0){
                     outOfBoundsY -= y1;
@@ -321,7 +296,6 @@ export const WindowDiv = React.memo((props: WindowProps) => {
     let MaximizeButton = null;
 
     const closeFunc = (() => {
-        console.log("saving state")
         let currState = getState();
         currState = {
             ...currState,
@@ -357,40 +331,6 @@ export const WindowDiv = React.memo((props: WindowProps) => {
         MaximizeButton = () => <></>
     }
 
-    //const BringZIndexToFront = () =>{
-        //const highestZ=findKeyOfmax(zIndexes);
-        //if(highestZ == pairName){
-            //return;
-        //}else{
-            //let sortedKeys = sortedKeysByVal(zIndexes);
-            //let currIndex = sortedKeys.indexOf(pairName);
-            //sortedKeys.unshift(sortedKeys.splice(currIndex, 1)[0]);
-            //let updatedZs: ZIndexDict = {};
-            //for(let i=0; i<sortedKeys.length; i++){
-                //updatedZs[sortedKeys[i]] = sortedKeys.length - i + 1;
-            //}
-            //props.updateZ(updatedZs);
-            //props.updateScroll(scroll);
-        //}
-    //}
-
-    //const SendZIndexToBack = () =>{
-        //const highestZ = findKeyOfmax(zIndexes);
-        //if(highestZ != pairName){
-            //return;
-        //}else{
-            //let sortedKeys = sortedKeysByVal(zIndexes);
-            //let currIndex = sortedKeys.indexOf(pairName);
-            //sortedKeys.push(sortedKeys.splice(currIndex, 1)[0]);
-            //let updatedZs: ZIndexDict = {};
-            //for(let i=0; i<sortedKeys.length; i++){
-                //updatedZs[sortedKeys[i]] = sortedKeys.length - i + 1;
-            //}
-            //props.updateZ(updatedZs);
-            //props.updateScroll(scroll);
-        //}
-    //}
-
     useEffect(() => {
         setIsClient(true);
     }, []);
@@ -419,13 +359,18 @@ export const WindowDiv = React.memo((props: WindowProps) => {
             //make moveable
             clickAndDrag(moverRef.current, windowRef.current);
 
-            //update z indexes
-            moverRef.current.style.zIndex = props.zIndex.toString();
-
             //make resize handles
             const resizableEle = windowRef.current;
             const moveableContainer = moverRef.current;
 
+            let bringToFront = () => {
+                if(moveableContainer){
+                    const newZ = props.getMaxZ();
+                    console.log(newZ);
+                    moveableContainer.style.zIndex = newZ.toString();
+                }
+            }
+            bringToFront();
 
             const styles = window.getComputedStyle(resizableEle);
 
@@ -451,8 +396,6 @@ export const WindowDiv = React.memo((props: WindowProps) => {
             const onMouseUpRightResize = (event: MouseEvent) => {
                 document.removeEventListener("mousemove", onMouseMoveRightResize);
                 resizeOutOfBoundsOffsetX = 0;
-
-                //updateWidth();
             }
 
             const onMouseDownRightResize = (event: MouseEvent) => {
@@ -830,11 +773,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
 
             const content = contentRef.current;
 
-            //if(content){
-                //content.addEventListener("mouseleave", updateScollBeforeStateChange);
-            //}
-
-            //moveableContainer.addEventListener("mousedown", BringZIndexToFront);
+            moveableContainer.addEventListener("mousedown", bringToFront);
 
             //cleanup event listeners
             return () => {
@@ -862,11 +801,8 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 if(resizerBottomRight){
                     resizerBottomRight.removeEventListener("mousedown", onMouseDownBottomRightResize);
                 }
-                //if(content){
-                    //content.removeEventListener("mouseleave", updateScollBeforeStateChange);
-                //}
 
-                //moveableContainer.addEventListener("mousedown", BringZIndexToFront);
+                moveableContainer.removeEventListener("mousedown", bringToFront);
             }
         };
     },[contentRef] );
