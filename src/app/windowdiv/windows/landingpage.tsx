@@ -12,7 +12,7 @@ export type LandingWindowProps = {
     prevProjectsPos: {x: number, y: number};
 }
 
-export const LandingWindow = React.memo((props : LandingWindowProps) => {
+export const LandingWindow = (props : LandingWindowProps) => {
     const projectFinger = useRef<HTMLDivElement>(null);
     const resumeFinger = useRef<HTMLDivElement>(null);
 
@@ -166,12 +166,4 @@ export const LandingWindow = React.memo((props : LandingWindowProps) => {
             <DynamicAbout/>
         </div>
     );
-}, (prevProps, nextProps) => {
-    return (
-        prevProps.resumePos.x === nextProps.resumePos.x &&
-        prevProps.resumePos.y === nextProps.resumePos.y &&
-        prevProps.projectsPos.x === nextProps.projectsPos.x &&
-        prevProps.projectsPos.y === nextProps.projectsPos.y &&
-        prevProps.width === nextProps.width
-    );
-});
+}
