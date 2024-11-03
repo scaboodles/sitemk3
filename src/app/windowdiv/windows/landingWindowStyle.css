@@ -92,7 +92,6 @@
 }
 .fingerWrap{
     width: 35%;
-    transition: transform 0.3s ease;
 }
 .pointhalf{
     display: flex;

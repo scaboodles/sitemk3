@@ -1,45 +1,8 @@
 "use client";
 import React, {useState, useEffect, useCallback} from 'react';
+import { defaultDimensions, getNumFromPx, WindowProps, WindowState } from './window';
 
-export const maxDimensionsOffset = {width:10,height:10};
-export const defaultDimensions = {
-    width: 860,
-    height: 500
-};
-
-export const defaultPosition = {x:75, y:15};
-export const maximizedPosition = {x:5, y:5};
-
-export type ZIndexDict = {[key: string]: number};
-
-export type WindowState = {
-    name: string;
-    windowShown: boolean;
-    windowWidth: number;
-    windowHeight: number;
-    windowPosition: {x: number, y: number};
-    windowScroll: number;
-}
-
-export type WindowProps = {
-    guts: () => JSX.Element;
-    saveWindowState: (arg : WindowState) => void;
-    forceFullScreen: boolean;
-    state : WindowState;
-    getMaxZ: () => number;
-};
-
-export const getWindowCenter = (windowState : WindowState) : {x: number, y: number} => {
-    if(!windowState.windowShown){
-        return {x: 0, y: 0};
-    }
-    const x = windowState.windowPosition.x + (windowState.windowWidth / 2);
-    const y = windowState.windowPosition.y + (windowState.windowHeight / 2);
-
-    return {x: x, y: y};
-}
-
-export const WindowDiv = React.memo((props: WindowProps) => {
+export const WindowDivNoUnmount = React.memo((props: WindowProps) => {
     const [isClient, setIsClient] = useState(false);
 
     const moverRef = React.createRef<HTMLDivElement>();
@@ -840,26 +803,40 @@ export const WindowDiv = React.memo((props: WindowProps) => {
             </div>
         );
     }
-    return null;
+    return (
+            <div ref={moverRef} className="mover hidden" id={pairName}>
+                <div className="window" ref={windowRef}>
+                    <div ref={resizeRefT} className="resizer resizer-t"></div>
+                    <div ref={resizeRefL} className="resizer resizer-l"></div>
+                    <div ref={resizeRefR} className="resizer resizer-r"></div>
+                    <div ref={resizeRefB} className="resizer resizer-b"></div>
+                    <div ref={resizeRefTL} className="resizer resizer-tl"/>
+                    <div ref={resizeRefTR} className="resizer resizer-tr"/>
+                    <div ref={resizeRefBL} className="resizer resizer-bl"/>
+                    <div ref={resizeRefBR} className="resizer resizer-br"/>
+
+                    <div className="windowHead" id={`${pairName}Head`}>
+                        <img src={"/desktopEmulationAssets/window-head-left.png"} className="windowHeadBorder windowHeadBorderLeft"></img>
+                        <img src={"/desktopEmulationAssets/window-head-middle.png"} className="windowHeadBorder windowHeadBorderMid"></img>
+                        <h1>{pairName}</h1>
+                        <img src={"/desktopEmulationAssets/window-head-right.png"} className="windowHeadBorder windowHeadBorderRight"></img>
+                    </div>
+                    <button className='closeButton' type='button' onClick={closeFunc}></button>
+                    <MaximizeButton/>
+                    
+                    <img src={"/desktopEmulationAssets/window-border.png"} className="windowBorderLeft"></img>
+                    <img src={"/desktopEmulationAssets/window-border.png"} className="windowBorderRight"></img>
+
+                    <div ref={contentRef} className='windowContents'>
+                        <Guts/>
+                    </div>
+
+                    <div className='windowBorderBottomContainer'>
+                        <img src={"/desktopEmulationAssets/window-border-bottom-left.png"} className='windowBorderBottomLeft'></img>
+                        <img src={"/desktopEmulationAssets/window-border.png"} className='windowBorderBottom'></img>
+                        <img src={"/desktopEmulationAssets/window-border-bottom-right.png"} className='windowBorderBottomRight'></img>
+                    </div>
+                </div>
+            </div>
+    );
 });
-
-export function getNumFromPx(numPx : string): number{
-    if(typeof numPx == "string"){
-      const stripped = numPx.replace("px", '');
-      return parseInt(stripped, 10);
-    }
-    return numPx;
-}
-
-type Offset={
-    left: number;
-    top: number;
-}
-
-export function getOffset(el: HTMLDivElement): Offset{
-    const rect = el.getBoundingClientRect();
-    return {
-        left: rect.left + window.scrollX,
-        top: rect.top + window.scrollY
-    };
-}

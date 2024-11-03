@@ -34,6 +34,20 @@ export const Pdf  = (props: FileProps) => {
     );
 };
 
+export type IDFileProps = {
+    name: string;
+    onDoubleClick: () => void;
+    ID: string;
+}
+export const IDPdf  = (props: IDFileProps) => {
+    return(
+        <div className="icon" onDoubleClick={props.onDoubleClick} id={props.ID}>
+            <img src={getSrc("txt-icon")} />
+            <h1>{`${props.name}.pdf`}</h1>
+        </div>
+    );
+};
+
 /*
 const CustomIcon = (props: FileProps) => {
     return(

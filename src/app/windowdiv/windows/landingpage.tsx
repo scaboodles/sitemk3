@@ -1,20 +1,60 @@
 import Image from 'next/image';
 import './landingWindowStyle.css';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { getNumFromPx } from '../window';
+import { update } from 'lodash';
+import { Pdf } from '../filetypes';
 
-export type LandingWindowProps = {
-    width : number;
-    resume: () => JSX.Element;
-    projects: () => JSX.Element;
-    resumePos: {x: number, y: number};
-    projectsPos: {x: number, y: number};
-    prevResumePos: {x: number, y: number};
-    prevProjectsPos: {x: number, y: number};
-}
-
-export const LandingWindow = (props : LandingWindowProps) => {
+export const LandingWindow = () => {
     const projectFinger = useRef<HTMLDivElement>(null);
     const resumeFinger = useRef<HTMLDivElement>(null);
+    const [resumePos, setResumePos] = useState({x: 0, y: 0});
+    const [resumeShown, toggleResume] = useState(true);
+
+    useEffect( () => {
+        const targetNode = document.getElementById('Resume Fall 2024');
+        if (!targetNode) return;
+
+        const updatePosition = () => {
+            const styles = window.getComputedStyle(targetNode);
+            const parentInternal = targetNode.querySelector('.window');
+            let widthOffset = 0;
+            let heightOffset = 0;
+            if(parentInternal){
+                const windowStyles = window.getComputedStyle(parentInternal);
+                widthOffset = parseInt(windowStyles.width, 10) / 2;
+                heightOffset = parseInt(windowStyles.height, 10) / 2;
+            }
+            const newPos = {x:getNumFromPx(styles.left) + widthOffset, y:getNumFromPx(styles.top) + heightOffset};
+            setResumePos(newPos);
+        };
+
+        updatePosition();
+
+        const observer = new MutationObserver( (mutations) => {
+            for(let mut of mutations){
+                if (mut.type === 'attributes' && mut.attributeName === 'style') {
+                    updatePosition();
+                }else if (mut.type === 'attributes' && mut.attributeName === 'class') {
+                    if(resumeFinger.current){
+                        if(targetNode.classList.contains('hidden')){
+                            toggleResume(false);
+                        }else{
+                            toggleResume(true);
+                        }
+                    }
+                }
+            }
+        })
+
+        observer.observe(targetNode, {
+            attributes: true 
+        });
+
+        return () => {
+            observer.disconnect();
+        };
+    }, [])
 
     function rotateToPoint(element: HTMLDivElement, target: {x: number, y: number}) {
         if(target.x == 0 && target.y == 0){
@@ -36,40 +76,19 @@ export const LandingWindow = (props : LandingWindowProps) => {
         element.style.transform = `rotate(${angleInDegrees + rotOffset}deg)`;
     }
 
-
-    const widthBP = 600;
-    const width = props.width;
-
     const getSrc = (filename: string) => {
         return `/images/${filename}`;
     }
 
-    const transition = 'transform 0.3s ease';
     useEffect(() => {
-        if (projectFinger.current) {
-            projectFinger.current.style.transition = 'none';
-            rotateToPoint(projectFinger.current, props.prevProjectsPos);
-            
-            requestAnimationFrame(() => {
-                if(projectFinger.current){
-                    projectFinger.current.style.transition = transition;
-                    rotateToPoint(projectFinger.current, props.projectsPos);
-                }
-            });
-        }
-    
         if (resumeFinger.current) {
-            resumeFinger.current.style.transition = 'none';
-            rotateToPoint(resumeFinger.current, props.prevResumePos);
-    
-            requestAnimationFrame(() => {
-                if(resumeFinger.current){
-                    resumeFinger.current.style.transition = transition;
-                    rotateToPoint(resumeFinger.current, props.resumePos);
-                }
-            });
+            if(resumeShown){
+                rotateToPoint(resumeFinger.current, resumePos);
+            }else{
+                rotateToPoint(resumeFinger.current, {x:0, y:0});
+            }
         }
-    }, []);
+    }, [resumePos, resumeShown]);
 
     const Fingers = () => {
         const fingerStyle: React.CSSProperties = {
@@ -77,13 +96,28 @@ export const LandingWindow = (props : LandingWindowProps) => {
             width: '100%', 
             height: '100%', 
         }
+        
+        const ResumeShortcut = () => {
+            return(
+                <Pdf name={'Resume'} onDoubleClick={() => {
+                    const resumeIcon = document.getElementById("resumeIcon");
+                    const doubleClickEvent = new MouseEvent('dblclick', {
+                        bubbles: true,
+                        cancelable: true,
+                    });
+                    resumeIcon?.dispatchEvent(doubleClickEvent);
+                }}/>
+            )
+        }
+
         return(
             <div id='fingers'>
 
                 <div className='pointhalf'>
 
                     <div className='hoverTextContainer'>
-                        <props.projects/>
+                        <div>
+                        </div>
                         <div className="hoverText">double click!</div>
                     </div>
 
@@ -94,7 +128,7 @@ export const LandingWindow = (props : LandingWindowProps) => {
 
                 <div className='pointhalf'>
                     <div className='hoverTextContainer'>
-                        <props.resume/>
+                        <ResumeShortcut/>
                         <div className="hoverText">double click!</div>
                     </div>
 
@@ -107,37 +141,16 @@ export const LandingWindow = (props : LandingWindowProps) => {
         )
     };
 
-    let DynamicAbout : React.FC;
     const profileStyle: React.CSSProperties = {
         objectFit: 'cover'
     };
     const ProfileGif = () => <Image src={getSrc("typin.gif")} alt="thats me!" fill={true} style={profileStyle} priority={true} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"/>;
-    if(width <= widthBP){
-        DynamicAbout = () => {
-            return(
-                <div id='aboutAlt'>
-                    <div id='thasmeAlt'>
-                        <div id='profileWrap'>
-                            <ProfileGif/>
-                        </div>
-                        <p>typin.gif</p>
-                    </div>
-                    <br/>
-                    <div>
-                        <div id='aboutText'>
-                            <h2>My name is Owen</h2>
-                            <br/>
-                            <br/>
-                            <h3>I like making stuff and solving problems.</h3>
-                        </div>
-                    </div>
-                    <Fingers/>
-                </div>
-            )
-        }
-    }else{
-        DynamicAbout = () => {
-            return(
+
+    return(
+        <div id='overrideGuts'>
+            <div id='header'>
+                <h1>Hello!</h1>
+            </div>
                 <div id='about'>
                     <div id='thasme'>
                         <div id='profileWrapHeight'>
@@ -154,16 +167,6 @@ export const LandingWindow = (props : LandingWindowProps) => {
                         <Fingers/>
                     </div>
                 </div>
-            )
-        }
-    }
-
-    return(
-        <div id='overrideGuts'>
-            <div id='header'>
-                <h1>Hello!</h1>
-            </div>
-            <DynamicAbout/>
         </div>
     );
 }

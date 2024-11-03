@@ -1,10 +1,13 @@
 "use client";
 
-import React, { memo, useMemo, useRef } from "react";
+import React, { createContext, Dispatch, memo, ReactNode, SetStateAction, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { WindowDiv, WindowProps, maxDimensionsOffset, defaultDimensions, defaultPosition, maximizedPosition, ZIndexDict, WindowState, getWindowCenter } from "./windowdiv/window";
-import { Folder, Html, Pdf } from "./windowdiv/filetypes"
-import { LandingWindow, LandingWindowProps } from "./windowdiv/windows/landingpage";
+import { Folder, Html, IDPdf, Pdf } from "./windowdiv/filetypes"
+import { LandingWindow } from "./windowdiv/windows/landingpage";
 import "./desktop.css"
+import { ResumeGuts } from "./windowdiv/windows/resume";
+import { identity } from "lodash";
+import { WindowDivNoUnmount } from "./windowdiv/hiddenWindow";
 
 interface DesktopState {
     windows: {
@@ -25,37 +28,21 @@ const normalizeZIndexes = () : number => {
     return idx--;
 };
 
-const TestWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
+const LandingPageWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
+    const pairName = 'Landing Page';
     const startState : WindowState = {
-        name: 'test',
+        name: pairName,
         windowShown: true,
         windowWidth: defaultDimensions.width,
         windowHeight: defaultDimensions.height,
         windowPosition: {x: defaultPosition.x, y: defaultPosition.y},
         windowScroll: 0
     }
+
     const [windowState , setWindowState ] = React.useState(startState);
 
     const windowProps : WindowProps = {
-        closeWindow: React.useCallback( () => 
-            {
-                setWindowState({
-                    ...windowState,
-                    windowShown: false
-                })
-            }, [windowState]),
-
-        guts: () => {return(<div>
-            <p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p>
-            <p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p>
-            <p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p>
-            <p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p>
-            <p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p>
-            <p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p>
-            <p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p>
-            <p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p>
-            <p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p><p>hello</p>
-            </div>)},
+        guts: () => {return(<LandingWindow/>)},
 
         saveWindowState: (newState : WindowState) => {
             setWindowState(newState)
@@ -76,64 +63,64 @@ const TestWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
         }
     }
 
+
     return (
         <React.Fragment>
             <WindowDiv {...windowProps}/>
-            <TestWindowIcon open={open} name={"test1"}/>
+            <HTMLIcon open={open} name={"Landing Page"}/>
         </React.Fragment>
     )
 });
 
-const TestWindow2 = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
-    const startState : WindowState = {
-        name: 'test2',
+const ResumeWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
+    const resumeStart : WindowState = {
+        name: 'Resume Fall 2024',
         windowShown: true,
         windowWidth: defaultDimensions.width,
         windowHeight: defaultDimensions.height,
         windowPosition: {x: defaultPosition.x, y: defaultPosition.y},
         windowScroll: 0
     }
-    const [windowState , setWindowState ] = React.useState(startState);
 
-    const windowProps : WindowProps = {
-        closeWindow: React.useCallback( () => 
-            {
-                setWindowState({
-                    ...windowState,
-                    windowShown: false
-                })
-            }, [windowState]),
+    const [resumeState , setResumeState ] = React.useState(resumeStart);
 
-        guts: () => {return(<p>hello again</p>)},
+    const resumeProps : WindowProps = {
+        guts: () => {return(
+            <ResumeGuts/>
+        )},
 
         saveWindowState: (newState : WindowState) => {
-            setWindowState(newState)
+            setResumeState(newState)
         },
 
         forceFullScreen: false,
-        state: windowState,
+        state: resumeState,
 
         getMaxZ: getMaxZ,
     }
 
     const open = () => {
-        if(!windowState.windowShown){
-            setWindowState({
-                ...windowState,
+        if(!resumeState.windowShown){
+            setResumeState({
+                ...resumeState,
                 windowShown: true
             })
         }
     }
 
-    return (
+    const ResumeIcon = () => {
+        return <IDPdf name={"Resume"} onDoubleClick={() => open()} ID={'resumeIcon'}/>
+    }
+
+    return(
         <React.Fragment>
-            <WindowDiv {...windowProps}/>
-            <TestWindowIcon open={open} name={"test2"}/>
+            <WindowDivNoUnmount {...resumeProps}/>
+            <ResumeIcon/>
         </React.Fragment>
     )
 });
 
-const TestWindowIcon = ({open, name} : {open : () => void, name: string}) => {
+const HTMLIcon = ({open, name} : {open : () => void, name: string}) => {
     return <Html name={name} onDoubleClick={() => open()}/>
 }
 
@@ -141,7 +128,7 @@ export const Desktop = () => {
     const maxZ = useRef<number>(0);
 
     const getMaxZ = (): number => {
-        if(maxZ.current >= 5){
+        if(maxZ.current >= 10){
             maxZ.current = normalizeZIndexes();
         }
 
@@ -151,8 +138,8 @@ export const Desktop = () => {
 
     return(
         <div id='Desktop'>
-            <TestWindow getMaxZ={getMaxZ} />
-            <TestWindow2 getMaxZ={getMaxZ} />
+            <LandingPageWindow getMaxZ={getMaxZ} />
+            <ResumeWindow getMaxZ={getMaxZ} />
         </div>
     )
 }
