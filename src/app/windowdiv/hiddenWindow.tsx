@@ -1,6 +1,6 @@
 "use client";
 import React, {useState, useEffect, useCallback} from 'react';
-import { defaultDimensions, getNumFromPx, WindowProps, WindowState } from './window';
+import { defaultDimensions, getNumFromPx, maxDimensionsOffset, maximizedPosition, WindowProps, WindowState } from './window';
 
 export const WindowDivNoUnmount = React.memo((props: WindowProps) => {
     const [isClient, setIsClient] = useState(false);
@@ -253,8 +253,6 @@ export const WindowDivNoUnmount = React.memo((props: WindowProps) => {
 
     let windowShown = props.state.windowShown;
 
-    let MaximizeButton = null;
-
     const closeFunc = (() => {
         let currState = getState();
         currState = {
@@ -265,31 +263,6 @@ export const WindowDivNoUnmount = React.memo((props: WindowProps) => {
         //SendZIndexToBack();
         //props.updateScroll(scroll);
     });
-
-
-    // come back to this
-    const maximizeWindow = (() => {
-        //props.updateHeight(window.innerHeight - maxDimensionsOffset.height);
-        //props.updateWidth(window.innerWidth - maxDimensionsOffset.width);
-        //props.setPos(maximizedPosition);
-        //props.updateScroll(scroll);
-    })
-
-    const minimizeWindow = (() => {
-        //props.updateHeight(defaultDimensions.height);
-        //props.updateWidth(defaultDimensions.width);
-        //props.updateScroll(scroll);
-    })
-
-    if(!forceFullScreen && isClient){
-        if(props.state.windowWidth >= window.innerWidth - 50 && props.state.windowHeight >= window.innerHeight - 50){
-            MaximizeButton = () => <button className='minimizeButton' type='button' onClick={minimizeWindow}></button>;
-        }else{
-            MaximizeButton = () => <button className='maximizeButton' type='button' onClick={maximizeWindow}></button>;
-        }
-    }else{
-        MaximizeButton = () => <></>
-    }
 
     useEffect(() => {
         setIsClient(true);
@@ -785,7 +758,6 @@ export const WindowDivNoUnmount = React.memo((props: WindowProps) => {
                         <img src={"/desktopEmulationAssets/window-head-right.png"} className="windowHeadBorder windowHeadBorderRight"></img>
                     </div>
                     <button className='closeButton' type='button' onClick={closeFunc}></button>
-                    <MaximizeButton/>
                     
                     <img src={"/desktopEmulationAssets/window-border.png"} className="windowBorderLeft"></img>
                     <img src={"/desktopEmulationAssets/window-border.png"} className="windowBorderRight"></img>
@@ -822,7 +794,6 @@ export const WindowDivNoUnmount = React.memo((props: WindowProps) => {
                         <img src={"/desktopEmulationAssets/window-head-right.png"} className="windowHeadBorder windowHeadBorderRight"></img>
                     </div>
                     <button className='closeButton' type='button' onClick={closeFunc}></button>
-                    <MaximizeButton/>
                     
                     <img src={"/desktopEmulationAssets/window-border.png"} className="windowBorderLeft"></img>
                     <img src={"/desktopEmulationAssets/window-border.png"} className="windowBorderRight"></img>

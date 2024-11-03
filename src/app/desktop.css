@@ -5,7 +5,7 @@
 }
 #githubIcon{
     position: absolute;
-    top: 5%;
+    top: 25px;
     right: 64px;
     z-index: 0;
     cursor: url("/desktopEmulationAssets/pointer-clickable.png"), auto;
@@ -15,7 +15,7 @@
 }
 #linkedInIcon{
     position: absolute;
-    top: 5%;
+    top: 25px;
     right: 128px;
     z-index: 0;
     cursor: url("/desktopEmulationAssets/pointer-clickable.png"), auto;
@@ -81,9 +81,12 @@
     text-align: center;
 }
 #Desktop .icon{
+    padding-left: 25px;
     cursor: url("/desktopEmulationAssets/pointer-clickable.png"), auto;
     position: relative;
     width: 64px;
+
+    z-index: 0;
 }
 .icon img{
     pointer-events: none;
@@ -126,11 +129,13 @@
 }
 .window {
     position: absolute;
-    border-radius: 3px;
     width: 860px;
     height: 440px;
     min-height: 280px;
     min-width: 280px;
+
+    border-radius: 25px;
+    transition: border .3s ease-in-out;
 }
 .windowHead{
     position: relative;

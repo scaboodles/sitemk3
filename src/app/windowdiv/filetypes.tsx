@@ -34,6 +34,28 @@ export const Pdf  = (props: FileProps) => {
     );
 };
 
+export type NOPFileProps = {
+    name: string;
+}
+
+export const NOPPdf  = (props: NOPFileProps) => {
+    return(
+        <div className="icon">
+            <img src={getSrc("txt-icon")} />
+            <h1>{`${props.name}.pdf`}</h1>
+        </div>
+    );
+};
+
+export const NOPFolder  = (props: NOPFileProps) => {
+    return(
+        <div className="icon">
+            <img src={getSrc("folder")} />
+            <h1>{props.name}</h1>
+        </div>
+    );
+};
+
 export type IDFileProps = {
     name: string;
     onDoubleClick: () => void;
@@ -41,9 +63,18 @@ export type IDFileProps = {
 }
 export const IDPdf  = (props: IDFileProps) => {
     return(
-        <div className="icon" onDoubleClick={props.onDoubleClick} id={props.ID}>
+        <div className="icon" onDoubleClick={props.onDoubleClick} id={props.ID} >
             <img src={getSrc("txt-icon")} />
             <h1>{`${props.name}.pdf`}</h1>
+        </div>
+    );
+};
+
+export const IDFolder = (props: IDFileProps) => {
+    return ( 
+        <div className="icon" onDoubleClick={props.onDoubleClick} id={props.ID}>
+            <img src={getSrc("folder")} />
+            <h1>{props.name}</h1>
         </div>
     );
 };
