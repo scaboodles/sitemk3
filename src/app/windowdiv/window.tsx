@@ -1,5 +1,5 @@
 "use client";
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useEffect } from 'react';
 
 export const maxDimensionsOffset = {width:10,height:10};
 export const defaultDimensions = {
@@ -27,6 +27,7 @@ export type WindowProps = {
     forceFullScreen: boolean;
     state : WindowState;
     getMaxZ: () => number;
+    unmountOnClose: boolean;
 };
 
 export const getWindowCenter = (windowState : WindowState) : {x: number, y: number} => {
@@ -40,13 +41,12 @@ export const getWindowCenter = (windowState : WindowState) : {x: number, y: numb
 }
 
 export const WindowDiv = React.memo((props: WindowProps) => {
-    const [isClient, setIsClient] = useState(false);
 
     const moverRef = React.createRef<HTMLDivElement>();
     const windowRef = React.createRef<HTMLDivElement>();
 
     const contentRef = React.createRef<HTMLDivElement>();
-    let scroll = props.state.windowScroll;
+    const scroll = props.state.windowScroll;
 
     const resizeRefT = React.createRef<HTMLDivElement>();
     const resizeRefL = React.createRef<HTMLDivElement>();
@@ -58,7 +58,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
     const resizeRefBR = React.createRef<HTMLDivElement>();
 
 
-    const forceFullScreen = props.forceFullScreen ? props.forceFullScreen : false; 
+    //const forceFullScreen = props.forceFullScreen ? props.forceFullScreen : false; 
 
     const pairName = props.state.name;
     const Guts=props.guts;
@@ -103,7 +103,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
     }
 
     function dragElement(elmnt: HTMLDivElement, win: HTMLDivElement){
-        var x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+        let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
 
         //hella globals bc i am bad at programming
         let outOfBoundsX = 0;
@@ -146,19 +146,19 @@ export const WindowDiv = React.memo((props: WindowProps) => {
             outOfBoundsY = elmnt.offsetTop;
 
             //max height and width of window
-            maxX = window.innerHeight;
+            maxY = window.innerHeight;
             maxX = window.innerWidth;
 
             if(win){ //need some data from win ref, might not exist yet
                 width = win.offsetWidth;
                 height = win.offsetHeight;
-                let pointOnWin = x2 - elmnt.offsetLeft;
+                const pointOnWin = x2 - elmnt.offsetLeft;
                 leftGrace = pointOnWin;
                 rightGrace = width - pointOnWin;
             }else{
                 width = elmnt.offsetWidth;
                 height = elmnt.offsetHeight;
-                let pointOnWin = x2 - elmnt.offsetLeft;
+                const pointOnWin = x2 - elmnt.offsetLeft;
                 leftGrace = pointOnWin;
                 rightGrace = width - pointOnWin;
             }
@@ -177,25 +177,25 @@ export const WindowDiv = React.memo((props: WindowProps) => {
             x1 = x2 - e.clientX;
             y1 = y2 - e.clientY;
 
-            let dx = -x1;
-            let dy = -y1;
+            const dx = -x1;
+            const dy = -y1;
 
             x2 = e.clientX;
             y2 = e.clientY;
 
             if(dxOld * dx < 0){//recalculate left and right grace spans on switch direction
-                let pointOnWin = x2 - elmnt.offsetLeft;
+                const pointOnWin = x2 - elmnt.offsetLeft;
                 leftGrace = pointOnWin;
                 rightGrace = width - pointOnWin;
 
                 if(dx<0){ //force window back in bounds after change in direction
-                    let outOfBounds = elmnt.offsetLeft + width - maxX;
+                    const outOfBounds = elmnt.offsetLeft + width - maxX;
                     if(outOfBounds>0){
                         outOfBoundsX -= outOfBounds; 
                         elmnt.style.left = `${maxX-width}px`;
                     }
                 }else{
-                    let outOfBounds = elmnt.offsetLeft;
+                    const outOfBounds = elmnt.offsetLeft;
                     if(outOfBounds<0){
                         outOfBoundsX -= outOfBounds; 
                         elmnt.style.left = `0px`;
@@ -205,13 +205,13 @@ export const WindowDiv = React.memo((props: WindowProps) => {
 
             if(dyOld * dy < 0){
                 if(dy>0){
-                    let outOfBounds = elmnt.offsetTop;
+                    const outOfBounds = elmnt.offsetTop;
                     if(outOfBounds < 0){
                         outOfBoundsY -= outOfBounds;
                         elmnt.style.top = `0px`;
                     }
                 }else{
-                    let outOfBounds = (elmnt.offsetTop + height) - maxY;
+                    const outOfBounds = (elmnt.offsetTop + height) - maxY;
                     if(outOfBounds > 0){
                         outOfBoundsY -= outOfBounds;
                         elmnt.style.top = `${maxY - height}px`
@@ -224,7 +224,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                     outOfBoundsX -= x1; //update outOfBounds tracker
                     elmnt.style.left = (elmnt.offsetLeft - x1) + "px";//update pos
                 }else if(rightGrace < 0){
-                    let pointOnWin = x2 - elmnt.offsetLeft;
+                    const pointOnWin = x2 - elmnt.offsetLeft;
                     leftGrace = pointOnWin;
                     rightGrace = width - pointOnWin;
                 }
@@ -233,7 +233,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                     outOfBoundsX -= x1;
                     elmnt.style.left = (elmnt.offsetLeft - x1) + "px";
                 }else if(leftGrace < 0){
-                    let pointOnWin = x2 - elmnt.offsetLeft;
+                    const pointOnWin = x2 - elmnt.offsetLeft;
                     leftGrace = pointOnWin;
                     rightGrace = width - pointOnWin;
                 }
@@ -261,7 +261,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
             }
         }
 
-        function closeDragElement(e: MouseEvent) {
+        function closeDragElement() {
             // stop moving when mouse button is released by removing document mouse events
             document.onmouseup = null;
             document.onmousemove = null;
@@ -288,7 +288,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
     let resizeOutOfBoundsOffsetY = 0;
     let resizeOutOfBoundsOffsetX = 0;
 
-    let windowShown = props.state.windowShown;
+    const windowShown = props.state.windowShown;
 
     const closeFunc = (() => {
         let currState = getState();
@@ -298,11 +298,6 @@ export const WindowDiv = React.memo((props: WindowProps) => {
         }
         props.saveWindowState(currState);
     });
-
-
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
 
     const restoreState = () => {
         const mounted = windowRef.current;
@@ -332,7 +327,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
             const resizableEle = windowRef.current;
             const moveableContainer = moverRef.current;
 
-            let bringToFront = () => {
+            const bringToFront = () => {
                 if(moveableContainer){
                     const newZ = props.getMaxZ();
                     moveableContainer.style.zIndex = newZ.toString();
@@ -361,7 +356,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 }
             };
 
-            const onMouseUpRightResize = (event: MouseEvent) => {
+            const onMouseUpRightResize = () => {
                 document.removeEventListener("mousemove", onMouseMoveRightResize);
                 resizeOutOfBoundsOffsetX = 0;
             }
@@ -388,7 +383,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 }
             };
 
-            const onMouseUpLeftResize = (event: MouseEvent) => {
+            const onMouseUpLeftResize = () => {
                 const resizedStyle = window.getComputedStyle(resizableEle);
                 const moverStyle = window.getComputedStyle(moveableContainer);
                 const tempLeft = getNumFromPx(resizedStyle.left);
@@ -421,7 +416,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 }
             };
 
-            const onMouseUpTopResize = (event: MouseEvent) => {
+            const onMouseUpTopResize = () => {
                 const resizedStyle = window.getComputedStyle(resizableEle);
                 const moverStyle = window.getComputedStyle(moveableContainer);
                 const tempTop = getNumFromPx(resizedStyle.top);
@@ -458,7 +453,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 }
             };
 
-            const onMouseUpBottomResize = (event: MouseEvent) => {
+            const onMouseUpBottomResize = () => {
                 document.removeEventListener("mousemove", onMouseMoveBottomResize);
                 resizeOutOfBoundsOffsetY = 0;
             }
@@ -498,7 +493,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 }
             }
 
-            const onMouseUpTopLeftResize = (event: MouseEvent) => {
+            const onMouseUpTopLeftResize = () => {
                 const resizedStyle = window.getComputedStyle(resizableEle);
                 const moverStyle = window.getComputedStyle(moveableContainer);
 
@@ -560,7 +555,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 }
             }
 
-            const onMouseUpTopRightResize = (event: MouseEvent) => {
+            const onMouseUpTopRightResize = () => {
                 const resizedStyle = window.getComputedStyle(resizableEle);
                 const moverStyle = window.getComputedStyle(moveableContainer);
 
@@ -617,7 +612,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 }
             }
 
-            const onMouseUpBottomRightResize = (event: MouseEvent) => {
+            const onMouseUpBottomRightResize = () => {
                 resizeOutOfBoundsOffsetY = 0;
                 resizeOutOfBoundsOffsetX = 0;
 
@@ -666,7 +661,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 }
             }
 
-            const onMouseUpBottomLeftResize = (event: MouseEvent) => {
+            const onMouseUpBottomLeftResize = () => {
                 const resizedStyle = window.getComputedStyle(resizableEle);
                 const moverStyle = window.getComputedStyle(moveableContainer);
 
@@ -739,8 +734,6 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 resizerBottomLeft.addEventListener("mousedown", onMouseDownBottomLeftResize);
             }
 
-            const content = contentRef.current;
-
             moveableContainer.addEventListener("mousedown", bringToFront);
 
             //cleanup event listeners
@@ -811,8 +804,45 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 </div>
             </div>
         );
+    }else if(!props.unmountOnClose){
+        return (
+            <div ref={moverRef} className="mover hidden" id={pairName} >
+                <div className="window" ref={windowRef}>
+                    <div ref={resizeRefT} className="resizer resizer-t"></div>
+                    <div ref={resizeRefL} className="resizer resizer-l"></div>
+                    <div ref={resizeRefR} className="resizer resizer-r"></div>
+                    <div ref={resizeRefB} className="resizer resizer-b"></div>
+                    <div ref={resizeRefTL} className="resizer resizer-tl"/>
+                    <div ref={resizeRefTR} className="resizer resizer-tr"/>
+                    <div ref={resizeRefBL} className="resizer resizer-bl"/>
+                    <div ref={resizeRefBR} className="resizer resizer-br"/>
+
+                    <div className="windowHead" id={`${pairName}Head`}>
+                        <img src={"/desktopEmulationAssets/window-head-left.png"} className="windowHeadBorder windowHeadBorderLeft"></img>
+                        <img src={"/desktopEmulationAssets/window-head-middle.png"} className="windowHeadBorder windowHeadBorderMid"></img>
+                        <h1>{pairName}</h1>
+                        <img src={"/desktopEmulationAssets/window-head-right.png"} className="windowHeadBorder windowHeadBorderRight"></img>
+                    </div>
+                    <button className='closeButton' type='button' onClick={closeFunc}></button>
+                    
+                    <img src={"/desktopEmulationAssets/window-border.png"} className="windowBorderLeft"></img>
+                    <img src={"/desktopEmulationAssets/window-border.png"} className="windowBorderRight"></img>
+
+                    <div ref={contentRef} className='windowContents'>
+                        <Guts/>
+                    </div>
+
+                    <div className='windowBorderBottomContainer'>
+                        <img src={"/desktopEmulationAssets/window-border-bottom-left.png"} className='windowBorderBottomLeft'></img>
+                        <img src={"/desktopEmulationAssets/window-border.png"} className='windowBorderBottom'></img>
+                        <img src={"/desktopEmulationAssets/window-border-bottom-right.png"} className='windowBorderBottomRight'></img>
+                    </div>
+                </div>
+            </div>
+        );
+    }else{
+        return null;
     }
-    return null;
 });
 
 export function getNumFromPx(numPx : string): number{

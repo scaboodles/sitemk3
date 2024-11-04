@@ -10,7 +10,7 @@ const getSrc = (name: string): string => {
 export const Folder = (props: FileProps) => {
     return ( 
         <div className="icon" onDoubleClick={props.onDoubleClick}>
-            <img src={getSrc("folder")} />
+            <img src={getSrc("folder")} alt="folder icon"/>
             <h1>{props.name}</h1>
         </div>
     );
@@ -19,7 +19,7 @@ export const Folder = (props: FileProps) => {
 export const Mov = (props: FileProps) => {
     return ( 
         <div className="icon" onDoubleClick={props.onDoubleClick}>
-            <img src={getSrc("mov-icon")} />
+            <img src={getSrc("mov-icon")} alt="movie icon"/>
             <h1>{`${props.name}.mov`}</h1>
         </div>
     );
@@ -28,7 +28,7 @@ export const Mov = (props: FileProps) => {
 export const Pdf  = (props: FileProps) => {
     return(
         <div className="icon" onDoubleClick={props.onDoubleClick}>
-            <img src={getSrc("txt-icon")} />
+            <img src={getSrc("txt-icon")} alt="pdf icon"/>
             <h1>{`${props.name}.pdf`}</h1>
         </div>
     );
@@ -41,7 +41,7 @@ export type NOPFileProps = {
 export const NOPPdf  = (props: NOPFileProps) => {
     return(
         <div className="icon">
-            <img src={getSrc("txt-icon")} />
+            <img src={getSrc("txt-icon")} alt="pdf icon"/>
             <h1>{`${props.name}.pdf`}</h1>
         </div>
     );
@@ -50,7 +50,7 @@ export const NOPPdf  = (props: NOPFileProps) => {
 export const NOPFolder  = (props: NOPFileProps) => {
     return(
         <div className="icon">
-            <img src={getSrc("folder")} />
+            <img src={getSrc("folder")} alt="folder icon"/>
             <h1>{props.name}</h1>
         </div>
     );
@@ -64,7 +64,7 @@ export type IDFileProps = {
 export const IDPdf  = (props: IDFileProps) => {
     return(
         <div className="icon" onDoubleClick={props.onDoubleClick} id={props.ID} >
-            <img src={getSrc("txt-icon")} />
+            <img src={getSrc("txt-icon")} alt="pdf icon"/>
             <h1>{`${props.name}.pdf`}</h1>
         </div>
     );
@@ -73,7 +73,7 @@ export const IDPdf  = (props: IDFileProps) => {
 export const IDFolder = (props: IDFileProps) => {
     return ( 
         <div className="icon" onDoubleClick={props.onDoubleClick} id={props.ID}>
-            <img src={getSrc("folder")} />
+            <img src={getSrc("folder")} alt="folder icon"/>
             <h1>{props.name}</h1>
         </div>
     );
@@ -93,7 +93,7 @@ const CustomIcon = (props: FileProps) => {
 export const Html = (props: FileProps) => {
     return(
         <div className="icon" onDoubleClick={props.onDoubleClick}>
-            <img src={getSrc("html-icon")} />
+            <img src={getSrc("html-icon")} alt="html icon"/>
             <h1>{`${props.name}.jsx`}</h1>
         </div>
     );

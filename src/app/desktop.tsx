@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { WindowDiv, WindowProps, maxDimensionsOffset, defaultDimensions, defaultPosition, maximizedPosition, ZIndexDict, WindowState, getWindowCenter } from "./windowdiv/window";
-import { Html, IDFolder, IDPdf, Pdf } from "./windowdiv/filetypes"
+import { WindowDiv, WindowProps, defaultDimensions, defaultPosition,  WindowState } from "./windowdiv/window";
+import { Html, IDFolder, IDPdf } from "./windowdiv/filetypes"
 import { LandingWindow } from "./windowdiv/windows/landingpage";
 import "./desktop.css"
 import { ResumeGuts } from "./windowdiv/windows/resume";
-import { WindowDivNoUnmount } from "./windowdiv/hiddenWindow";
 
 const normalizeZIndexes = () : number => {
     const allWindows = Array.from(document.querySelectorAll('.mover') as NodeListOf<HTMLElement>);
@@ -104,6 +103,7 @@ const LandingPageWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) =
         state: windowState,
 
         getMaxZ: getMaxZ,
+        unmountOnClose: true
     }
 
     const open = () => {
@@ -159,6 +159,7 @@ const ProjectsWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
         state: projectsState,
 
         getMaxZ: getMaxZ,
+        unmountOnClose: false
     }
 
     const open = () => {
@@ -185,7 +186,7 @@ const ProjectsWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
 
     return(
         <React.Fragment>
-            <WindowDivNoUnmount {...projectsProps}/>
+            <WindowDiv {...projectsProps}/>
             <ProjectsIcon/>
         </React.Fragment>
     )
@@ -226,6 +227,7 @@ const ResumeWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
         state: resumeState,
 
         getMaxZ: getMaxZ,
+        unmountOnClose: false
     }
 
     const open = () => {
@@ -252,7 +254,7 @@ const ResumeWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
 
     return(
         <React.Fragment>
-            <WindowDivNoUnmount {...resumeProps}/>
+            <WindowDiv {...resumeProps}/>
             <ResumeIcon/>
         </React.Fragment>
     )

@@ -2,8 +2,7 @@ import Image from 'next/image';
 import './landingWindowStyle.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { defaultPosition, getNumFromPx } from '../window';
-import { update } from 'lodash';
-import { NOPFolder, NOPPdf, Pdf } from '../filetypes';
+import { NOPFolder, NOPPdf } from '../filetypes';
 
 export const LandingWindow = () => {
     const projectFinger = useRef<HTMLDivElement>(null);
@@ -70,7 +69,7 @@ export const LandingWindow = () => {
         updateProjectsPosition();
 
         const selfObserver = new MutationObserver( (mutations) => {
-            for(let mut of mutations){
+            for(const mut of mutations){
                 if (mut.type === 'attributes' && mut.attributeName === 'style') {
                     updateSelfPosition();
                 }
@@ -82,7 +81,7 @@ export const LandingWindow = () => {
         });
 
         const resumeObserver = new MutationObserver( (mutations) => {
-            for(let mut of mutations){
+            for(const mut of mutations){
                 if (mut.type === 'attributes' && mut.attributeName === 'style') {
                     updateResumePosition();
                 }else if (mut.type === 'attributes' && mut.attributeName === 'class') {
@@ -102,7 +101,7 @@ export const LandingWindow = () => {
         });
 
         const projectsObserver = new MutationObserver( (mutations) => {
-            for(let mut of mutations){
+            for(const mut of mutations){
                 if (mut.type === 'attributes' && mut.attributeName === 'style') {
                     updateProjectsPosition();
                 }else if (mut.type === 'attributes' && mut.attributeName === 'class') {
@@ -192,7 +191,7 @@ export const LandingWindow = () => {
         objectFit: 'cover'
     };
 
-    const ProfileGif = () => <Image src={getSrc("typin.gif")} alt="thats me!" fill={true} style={profileStyle} priority={true} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"/>;
+    const ProfileGif = () => <Image src={getSrc("typin.gif")} unoptimized={true} alt="thats me!" fill={true} style={profileStyle} priority={true} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"/>;
 
     return(
         <div id='overrideGuts'>
@@ -223,7 +222,7 @@ export const LandingWindow = () => {
                                 </div>
                             </div>
                             <div className='fingerWrap' ref={projectFinger}>
-                                <Image src={getSrc("pointin.gif")} alt="pointing finger" width={100} height={100} className='fingerStyle'/>
+                                <Image unoptimized={true} src={getSrc("pointin.gif")} alt="pointing finger" width={100} height={100} className='fingerStyle'/>
                             </div>
                         </div>
 
@@ -235,7 +234,7 @@ export const LandingWindow = () => {
                                 </div>
                             </div>
                             <div className='fingerWrap' ref={resumeFinger}>
-                                <Image src={getSrc("pointin.gif")} alt="pointing finger" width={100} height={100} className='fingerStyle'/>
+                                <Image unoptimized={true} src={getSrc("pointin.gif")} alt="pointing finger" width={100} height={100} className='fingerStyle'/>
                             </div>
                         </div>
                     </div>
