@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { WindowDiv, WindowProps, defaultDimensions, defaultPosition,  WindowState } from "./windowdiv/window";
 import { Html, IDFolder, IDPdf } from "./windowdiv/filetypes"
 import { LandingWindow } from "./windowdiv/windows/landingpage";
@@ -69,11 +69,41 @@ const getInitalProjectsTelemetry = (): telemetry => {
     return telem;
 }
 
+const fadeInInital = (initTelem: telemetry, state : WindowState, setState: Dispatch<SetStateAction<WindowState>>) => {
+    const windowRef = document.getElementById(state.name) as HTMLElement;
+    if(windowRef){
+        windowRef.style.opacity = '0';
+        setState({
+            ...state,
+            windowWidth: initTelem.size.width,
+            windowHeight: initTelem.size.height,
+            windowPosition: initTelem.position,
+            windowShown: true
+        });
+        setTimeout(() => {
+            windowRef.style.opacity = '1';
+        }, 50);
+    }
+}
+const fadeIn = (state : WindowState, setState: Dispatch<SetStateAction<WindowState>>) => {
+    const windowRef = document.getElementById(state.name) as HTMLElement;
+    if(windowRef){
+        windowRef.style.opacity = '0';
+        setState({
+            ...state,
+            windowShown: true
+        });
+        setTimeout(() => {
+            windowRef.style.opacity = '1';
+        }, 50);
+    }
+}
+
 const LandingPageWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
     const pairName = 'Landing Page';
     const startState : WindowState = {
         name: pairName,
-        windowShown: true,
+        windowShown: false,
         windowWidth: defaultDimensions.width,
         windowHeight: defaultDimensions.height,
         windowPosition: {x: defaultPosition.x, y: defaultPosition.y},
@@ -84,12 +114,7 @@ const LandingPageWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) =
 
     useEffect( () => {
         const telem = getInitalLandingPageTelemetry();
-        setWindowState({
-            ...windowState,
-            windowWidth: telem.size.width,
-            windowHeight: telem.size.height,
-            windowPosition: telem.position,
-        })
+        fadeInInital(telem, windowState, setWindowState);
     },[])
 
     const windowProps : WindowProps = {
@@ -103,7 +128,7 @@ const LandingPageWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) =
         state: windowState,
 
         getMaxZ: getMaxZ,
-        unmountOnClose: true
+        unmountOnClose: false
     }
 
     const open = () => {
@@ -127,7 +152,7 @@ const LandingPageWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) =
 const ProjectsWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
     const projectsStart : WindowState = {
         name: 'Projects',
-        windowShown: true,
+        windowShown: false,
         windowWidth: defaultDimensions.width,
         windowHeight: defaultDimensions.height,
         windowPosition: {x: defaultPosition.x, y: defaultPosition.y},
@@ -138,12 +163,7 @@ const ProjectsWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
 
     useEffect( () => {
         const telem = getInitalProjectsTelemetry();
-        setProjectsState({
-            ...projectsState,
-            windowWidth: telem.size.width,
-            windowHeight: telem.size.height,
-            windowPosition: telem.position,
-        })
+        fadeInInital(telem, projectsState, setProjectsState);
     },[])
 
     const projectsProps : WindowProps = {
@@ -164,10 +184,7 @@ const ProjectsWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
 
     const open = () => {
         if(!projectsState.windowShown){
-            setProjectsState({
-                ...projectsState,
-                windowShown: true
-            })
+            fadeIn(projectsState, setProjectsState);
         }
 
         const windowRef = document.getElementById(projectsState.name)?.querySelector(".window") as HTMLElement;
@@ -195,7 +212,7 @@ const ProjectsWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
 const ResumeWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
     const resumeStart : WindowState = {
         name: 'Resume Fall 2024',
-        windowShown: true,
+        windowShown: false,
         windowWidth: defaultDimensions.width,
         windowHeight: defaultDimensions.height,
         windowPosition: {x: defaultPosition.x, y: defaultPosition.y},
@@ -206,12 +223,7 @@ const ResumeWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
 
     useEffect( () => {
         const telem = getInitalResumeTelemetry();
-        setResumeState({
-            ...resumeState,
-            windowWidth: telem.size.width,
-            windowHeight: telem.size.height,
-            windowPosition: telem.position,
-        })
+        fadeInInital(telem, resumeState, setResumeState);
     },[])
 
     const resumeProps : WindowProps = {

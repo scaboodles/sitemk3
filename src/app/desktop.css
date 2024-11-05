@@ -126,6 +126,9 @@
 .mover{
     position: absolute;
     z-index: 1;
+    opacity: 1;
+
+    transition: opacity .2s ease-in-out;
 }
 .window {
     position: absolute;
@@ -300,6 +303,7 @@
     display: none;
     pointer-events: none;
 }
+
 .decor{
     pointer-events: none;
 }
