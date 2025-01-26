@@ -296,7 +296,16 @@ export const WindowDiv = React.memo((props: WindowProps) => {
             ...currState,
             windowShown: false
         }
-        props.saveWindowState(currState);
+
+        const windowRef = document.getElementById(currState.name) as HTMLElement;
+        if(windowRef){
+            windowRef.style.opacity = '0';
+            setTimeout(() => {
+                props.saveWindowState(currState);
+            }, 100);
+        }else{
+            props.saveWindowState(currState);
+        }
     });
 
     const restoreState = () => {

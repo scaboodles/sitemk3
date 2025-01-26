@@ -2,7 +2,7 @@
 
 import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { WindowDiv, WindowProps, defaultDimensions, defaultPosition,  WindowState } from "./windowdiv/window";
-import { Html, IDFolder, IDPdf } from "./windowdiv/filetypes"
+import { Html, IDFolder, IDHtml, IDPdf } from "./windowdiv/filetypes"
 import { LandingWindow } from "./windowdiv/windows/landingpage";
 import "./desktop.css"
 import { ResumeGuts } from "./windowdiv/windows/resume";
@@ -85,7 +85,8 @@ const fadeInInital = (initTelem: telemetry, state : WindowState, setState: Dispa
         }, 50);
     }
 }
-const fadeIn = (state : WindowState, setState: Dispatch<SetStateAction<WindowState>>) => {
+
+const fadeInWindow = (state : WindowState, setState: Dispatch<SetStateAction<WindowState>>) => {
     const windowRef = document.getElementById(state.name) as HTMLElement;
     if(windowRef){
         windowRef.style.opacity = '0';
@@ -133,10 +134,16 @@ const LandingPageWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) =
 
     const open = () => {
         if(!windowState.windowShown){
-            setWindowState({
-                ...windowState,
-                windowShown: true
-            })
+            fadeInWindow(windowState, setWindowState);
+        }
+
+        const windowRef = document.getElementById(windowState.name)?.querySelector(".window") as HTMLElement;
+        if(windowRef && windowState.windowShown){
+            windowRef.style.border = '5px solid white';
+        
+            setTimeout(() => {
+                windowRef.style.border = '0px solid white';
+            }, 500);
         }
     }
 
@@ -144,7 +151,7 @@ const LandingPageWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) =
     return (
         <React.Fragment>
             <WindowDiv {...windowProps}/>
-            <HTMLIcon open={open} name={"Landing Page"}/>
+            <IDHtml onDoubleClick={open} name={"Landing Page"} ID="landingIcon"/>
         </React.Fragment>
     )
 });
@@ -184,7 +191,8 @@ const ProjectsWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
 
     const open = () => {
         if(!projectsState.windowShown){
-            fadeIn(projectsState, setProjectsState);
+            console.log("trigger fade")
+            fadeInWindow(projectsState, setProjectsState);
         }
 
         const windowRef = document.getElementById(projectsState.name)?.querySelector(".window") as HTMLElement;
@@ -244,10 +252,7 @@ const ResumeWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
 
     const open = () => {
         if(!resumeState.windowShown){
-            setResumeState({
-                ...resumeState,
-                windowShown: true
-            })
+            fadeInWindow(resumeState, setResumeState);
         }
 
         const windowRef = document.getElementById(resumeState.name)?.querySelector(".window") as HTMLElement;
@@ -271,10 +276,6 @@ const ResumeWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
         </React.Fragment>
     )
 });
-
-const HTMLIcon = ({open, name} : {open : () => void, name: string}) => {
-    return <Html name={name} onDoubleClick={() => open()}/>
-}
 
 const GithubLink = () => {
     const staticImg = "/desktopEmulationAssets/gh-icon.png";

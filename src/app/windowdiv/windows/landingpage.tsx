@@ -16,6 +16,8 @@ export const LandingWindow = () => {
 
     const [selfPosition, setSelfPosition] = useState({x: defaultPosition.x, y: defaultPosition.y});
 
+    const [altRender, toggleAltRender] = useState(false);
+
     useEffect( () => {
         const resumeNode = document.getElementById('Resume Fall 2024');
         const selfNode = document.getElementById('Landing Page');
@@ -24,7 +26,7 @@ export const LandingWindow = () => {
 
         const updateSelfPosition = () => {
             const styles = window.getComputedStyle(selfNode);
-            const parentInternal = resumeNode.querySelector('.window');
+            const parentInternal = selfNode.querySelector('.window');
             let widthOffset = 0;
             let heightOffset = 0;
             if(parentInternal){
@@ -52,7 +54,7 @@ export const LandingWindow = () => {
 
         const updateProjectsPosition = () => {
             const styles = window.getComputedStyle(projectsNode);
-            const parentInternal = resumeNode.querySelector('.window');
+            const parentInternal = projectsNode.querySelector('.window');
             let widthOffset = 0;
             let heightOffset = 0;
             if(parentInternal){
@@ -64,19 +66,36 @@ export const LandingWindow = () => {
             setProjectsPos(newPos);
         };
 
+        const checkWidth = () => {
+            const parentInternal = selfNode.querySelector('.window');
+            if(parentInternal){
+                const windowStyles = window.getComputedStyle(parentInternal);
+                console.log(parseInt(windowStyles.width, 10));
+
+                if(parseInt(windowStyles.width, 10) < 700){
+                    toggleAltRender(true);
+                }else{
+                    toggleAltRender(false);
+                }
+            }
+        }
+
         updateResumePosition();
         updateSelfPosition();
         updateProjectsPosition();
+
+        checkWidth();
 
         const selfObserver = new MutationObserver( (mutations) => {
             for(const mut of mutations){
                 if (mut.type === 'attributes' && mut.attributeName === 'style') {
                     updateSelfPosition();
+                    checkWidth();
                 }
             }
         });
 
-        selfObserver.observe(selfNode, {
+        selfObserver.observe(selfNode.querySelector(".window")!, {
             attributes: true 
         });
 
@@ -193,13 +212,15 @@ export const LandingWindow = () => {
 
     const ProfileGif = () => <Image src={getSrc("typin.gif")} unoptimized={true} alt="thats me!" fill={true} style={profileStyle} priority={true} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"/>;
 
+    const aboutId = altRender ? "aboutAlt" : "about"
+
     return(
         <div id='overrideGuts'>
             <div id='header'>
                 <h1>Hello!</h1>
             </div>
 
-            <div id='about'>
+            <div id={aboutId}>
                 <div id='thasme'>
                     <div id='profileWrapHeight'>
                         <ProfileGif/>
