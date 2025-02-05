@@ -8,8 +8,17 @@ export const ResumeGuts = () => {
     return(
         <div style={{height: '100%', backgroundColor:'white'}}>
             <br/>
-            <div style={{ display: 'flex', justifyContent: 'space-between', paddingLeft: '5%', paddingRight: '5%'}}>
+            <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    width: '100%', 
+                    paddingLeft: '5%', 
+                    paddingRight: '5%',
+                    textAlign: 'center',
+                }}>
                 <a href="/images/OwenWolffResumeFall2024.pdf" download className='fakeButton clickable' >Download</a>
+                <p> The links won&apos;t work unless viewed in the browser</p>
                 <a href="/images/OwenWolffResumeFall2024.pdf" target="_blank" rel="noopener noreferrer" className='fakeButton clickable' >View in Browser</a>
             </div>
 

@@ -1,11 +1,11 @@
 "use client";
-
 import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { WindowDiv, WindowProps, defaultDimensions, defaultPosition,  WindowState } from "./windowdiv/window";
-import { Html, IDFolder, IDHtml, IDPdf } from "./windowdiv/filetypes"
+import { GhostIcon, IDHtml, RefFolder, RefPDF } from "./windowdiv/filetypes"
 import { LandingWindow } from "./windowdiv/windows/landingpage";
 import "./desktop.css"
 import { ResumeGuts } from "./windowdiv/windows/resume";
+import { ProjectsGuts } from "./windowdiv/windows/projects";
 
 const normalizeZIndexes = () : number => {
     const allWindows = Array.from(document.querySelectorAll('.mover') as NodeListOf<HTMLElement>);
@@ -70,7 +70,7 @@ const getInitalProjectsTelemetry = (): telemetry => {
 }
 
 const fadeInInital = (initTelem: telemetry, state : WindowState, setState: Dispatch<SetStateAction<WindowState>>) => {
-    const windowRef = document.getElementById(state.name) as HTMLElement;
+    const windowRef = document.getElementById(state.ID) as HTMLElement;
     if(windowRef){
         windowRef.style.opacity = '0';
         setState({
@@ -86,8 +86,8 @@ const fadeInInital = (initTelem: telemetry, state : WindowState, setState: Dispa
     }
 }
 
-const fadeInWindow = (state : WindowState, setState: Dispatch<SetStateAction<WindowState>>) => {
-    const windowRef = document.getElementById(state.name) as HTMLElement;
+export const fadeInWindow = (state : WindowState, setState: Dispatch<SetStateAction<WindowState>>) => {
+    const windowRef = document.getElementById(state.ID) as HTMLElement;
     if(windowRef){
         windowRef.style.opacity = '0';
         setState({
@@ -104,6 +104,7 @@ const LandingPageWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) =
     const pairName = 'Landing Page';
     const startState : WindowState = {
         name: pairName,
+        ID: 'landingPageWindow',
         windowShown: false,
         windowWidth: defaultDimensions.width,
         windowHeight: defaultDimensions.height,
@@ -137,7 +138,7 @@ const LandingPageWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) =
             fadeInWindow(windowState, setWindowState);
         }
 
-        const windowRef = document.getElementById(windowState.name)?.querySelector(".window") as HTMLElement;
+        const windowRef = document.getElementById(windowState.ID)?.querySelector(".window") as HTMLElement;
         if(windowRef && windowState.windowShown){
             windowRef.style.border = '5px solid white';
         
@@ -159,6 +160,7 @@ const LandingPageWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) =
 const ProjectsWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
     const projectsStart : WindowState = {
         name: 'Projects',
+        ID: 'projectsWindow',
         windowShown: false,
         windowWidth: defaultDimensions.width,
         windowHeight: defaultDimensions.height,
@@ -167,6 +169,7 @@ const ProjectsWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
     }
 
     const [projectsState , setProjectsState ] = React.useState(projectsStart);
+    const iconMounted = useRef<boolean>(false);
 
     useEffect( () => {
         const telem = getInitalProjectsTelemetry();
@@ -174,9 +177,7 @@ const ProjectsWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
     },[])
 
     const projectsProps : WindowProps = {
-        guts: () => {return(
-            <div></div>
-        )},
+        guts: () => {return(<ProjectsGuts/>)},
 
         saveWindowState: (newState : WindowState) => {
             setProjectsState(newState)
@@ -191,11 +192,10 @@ const ProjectsWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
 
     const open = () => {
         if(!projectsState.windowShown){
-            console.log("trigger fade")
             fadeInWindow(projectsState, setProjectsState);
         }
 
-        const windowRef = document.getElementById(projectsState.name)?.querySelector(".window") as HTMLElement;
+        const windowRef = document.getElementById(projectsState.ID)?.querySelector(".window") as HTMLElement;
         if(windowRef && projectsState.windowShown){
             windowRef.style.border = '5px solid white';
         
@@ -206,7 +206,7 @@ const ProjectsWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
     }
 
     const ProjectsIcon = () => {
-        return <IDFolder name={"Projects"} onDoubleClick={() => open()} ID={'projectsIcon'}/>
+        return <RefFolder mountedRef={iconMounted} name={"Projects"} onDoubleClick={() => open()} ID={'projectsIcon'}/>
     }
 
     return(
@@ -220,6 +220,7 @@ const ProjectsWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
 const ResumeWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
     const resumeStart : WindowState = {
         name: 'Resume Fall 2024',
+        ID: 'resumeWindow',
         windowShown: false,
         windowWidth: defaultDimensions.width,
         windowHeight: defaultDimensions.height,
@@ -228,6 +229,7 @@ const ResumeWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
     }
 
     const [resumeState , setResumeState ] = React.useState(resumeStart);
+    const iconMounted = useRef<boolean>(false);
 
     useEffect( () => {
         const telem = getInitalResumeTelemetry();
@@ -255,7 +257,7 @@ const ResumeWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
             fadeInWindow(resumeState, setResumeState);
         }
 
-        const windowRef = document.getElementById(resumeState.name)?.querySelector(".window") as HTMLElement;
+        const windowRef = document.getElementById(resumeState.ID)?.querySelector(".window") as HTMLElement;
         if(windowRef && resumeState.windowShown){
             windowRef.style.border = '5px solid white';
         
@@ -266,7 +268,7 @@ const ResumeWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
     }
 
     const ResumeIcon = () => {
-        return <IDPdf name={"Resume"} onDoubleClick={() => open()} ID={'resumeIcon'}/>
+        return <RefPDF mountedRef={iconMounted} name={"Resume"} onDoubleClick={() => open()} ID={'resumeIcon'}/>
     }
 
     return(
@@ -291,6 +293,132 @@ const LinkedInLink = () => {
     return <a href='https://www.linkedin.com/in/owen-wolff-061a85229/' target="_blank"><img id='linkedInIcon' src={staticImg} onMouseOver={e => (e.currentTarget.src = hoverImg)} onMouseOut={e => (e.currentTarget.src = staticImg)} alt="linked in link"></img></a>;
 }
 
+type PlayerProps = {
+    videoId: string;
+    vidName: string;
+}
+
+const Player: React.FC<PlayerProps> = ({ videoId, vidName }) => {
+    return (
+        <div className="youtube-wrapper">
+        <iframe
+            src={`https://www.youtube.com/embed/${videoId}`}
+            title={vidName}
+            frameBorder="0"
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope;"
+        ></iframe>
+        </div>
+    );
+};
+
+const VizDemo = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
+    const vizStart : WindowState = {
+        name: 'Visualizer Demo',
+        ID: "vizWindow",
+        windowShown: false,
+        windowWidth: defaultDimensions.width,
+        windowHeight: defaultDimensions.height,
+        windowPosition: {x: defaultPosition.x, y: defaultPosition.y},
+        windowScroll: 0
+    }
+
+    const [vizState , setVizState ] = React.useState(vizStart);
+
+    const vizProps : WindowProps = {
+        guts: () => {return(
+            <div style={{width: '100', height:'100%', backgroundColor:'black'}}>
+                <Player videoId="iBkNva83Ftw" vidName="wiretap viz demo"/>
+            </div>
+        )},
+
+        saveWindowState: (newState : WindowState) => {
+            setVizState(newState)
+        },
+
+        forceFullScreen: false,
+        state: vizState,
+
+        getMaxZ: getMaxZ,
+        unmountOnClose: false
+    }
+
+    const open = () => {
+        if(!vizState.windowShown){
+            fadeInWindow(vizState, setVizState);
+        }
+
+        const windowRef = document.getElementById(vizState.ID)?.querySelector(".window") as HTMLElement;
+        if(windowRef && vizState.windowShown){
+            windowRef.style.border = '5px solid white';
+        
+            setTimeout(() => {
+                windowRef.style.border = '0px solid white';
+            }, 500);
+        }
+    }
+
+    return(
+        <React.Fragment>
+            <GhostIcon ID="vizIcon" onDoubleClick={open}/>
+            <WindowDiv {...vizProps}/>
+        </React.Fragment>
+    )
+});
+
+const TetrisDemo = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
+    const tetrisStart : WindowState = {
+        name: 'Tetris Demo',
+        ID: "vizWindow",
+        windowShown: false,
+        windowWidth: defaultDimensions.width,
+        windowHeight: defaultDimensions.height,
+        windowPosition: {x: defaultPosition.x, y: defaultPosition.y},
+        windowScroll: 0
+    }
+
+    const [tetrisState, setTetrisState ] = React.useState(tetrisStart);
+
+    const tetrisProps : WindowProps = {
+        guts: () => {return(
+            <div style={{width: '100', height:'100%', backgroundColor:'black'}}>
+                <Player videoId="ZLDA33eqwWo" vidName="cursed tetris demo"/>
+            </div>
+        )},
+
+        saveWindowState: (newState : WindowState) => {
+            setTetrisState(newState)
+        },
+
+        forceFullScreen: false,
+        state: tetrisState,
+
+        getMaxZ: getMaxZ,
+        unmountOnClose: false
+    }
+
+    const open = () => {
+        if(!tetrisStart.windowShown){
+            fadeInWindow(tetrisState, setTetrisState);
+        }
+
+        const windowRef = document.getElementById(tetrisState.ID)?.querySelector(".window") as HTMLElement;
+        if(windowRef && tetrisState.windowShown){
+            windowRef.style.border = '5px solid white';
+        
+            setTimeout(() => {
+                windowRef.style.border = '0px solid white';
+            }, 500);
+        }
+    }
+
+    return(
+        <React.Fragment>
+            <GhostIcon ID="tetrisIcon" onDoubleClick={open}/>
+            <WindowDiv {...tetrisProps}/>
+        </React.Fragment>
+    )
+});
+
 export const Desktop = () => {
     const maxZ = useRef<number>(1);
 
@@ -311,6 +439,9 @@ export const Desktop = () => {
             <ProjectsWindow getMaxZ={getMaxZ} />
             <ResumeWindow getMaxZ={getMaxZ} />
             <LandingPageWindow getMaxZ={getMaxZ} />
+
+            <VizDemo getMaxZ={getMaxZ}/>
+            <TetrisDemo getMaxZ={getMaxZ}/>
         </div>
     )
 }

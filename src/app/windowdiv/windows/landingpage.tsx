@@ -19,9 +19,9 @@ export const LandingWindow = () => {
     const [altRender, toggleAltRender] = useState(false);
 
     useEffect( () => {
-        const resumeNode = document.getElementById('Resume Fall 2024');
-        const selfNode = document.getElementById('Landing Page');
-        const projectsNode = document.getElementById('Projects');
+        const resumeNode = document.getElementById('resumeWindow');
+        const selfNode = document.getElementById('landingPageWindow');
+        const projectsNode = document.getElementById('projectsWindow');
         if (!resumeNode || !selfNode || !projectsNode) return;
 
         const updateSelfPosition = () => {
@@ -70,8 +70,6 @@ export const LandingWindow = () => {
             const parentInternal = selfNode.querySelector('.window');
             if(parentInternal){
                 const windowStyles = window.getComputedStyle(parentInternal);
-                console.log(parseInt(windowStyles.width, 10));
-
                 if(parseInt(windowStyles.width, 10) < 700){
                     toggleAltRender(true);
                 }else{
@@ -89,13 +87,24 @@ export const LandingWindow = () => {
         const selfObserver = new MutationObserver( (mutations) => {
             for(const mut of mutations){
                 if (mut.type === 'attributes' && mut.attributeName === 'style') {
-                    updateSelfPosition();
                     checkWidth();
                 }
             }
         });
 
+        const selfObserverPos = new MutationObserver( (mutations) => {
+            for(const mut of mutations){
+                if (mut.type === 'attributes' && mut.attributeName === 'style') {
+                    updateSelfPosition();
+                }
+            }
+        });
+
         selfObserver.observe(selfNode.querySelector(".window")!, {
+            attributes: true 
+        });
+
+        selfObserverPos.observe(selfNode, {
             attributes: true 
         });
 
@@ -239,7 +248,7 @@ export const LandingWindow = () => {
                             <div className='flex' onDoubleClick={projectsOpenEvent}>
                                 <div className='hoverTextContainer'>
                                     <NOPFolder name={"Projects"}/>
-                                    <div className="hoverText">double click!</div>
+                                    <div className="hoverText">double click to open!</div>
                                 </div>
                             </div>
                             <div className='fingerWrap' ref={projectFinger}>
@@ -251,7 +260,7 @@ export const LandingWindow = () => {
                             <div className='flex' onDoubleClick={resumeOpenEvent}>
                                 <div className='hoverTextContainer'>
                                     <NOPPdf name={"Resume"}/>
-                                    <div className="hoverText">double click!</div>
+                                    <div className="hoverText">double click to open!</div>
                                 </div>
                             </div>
                             <div className='fingerWrap' ref={resumeFinger}>

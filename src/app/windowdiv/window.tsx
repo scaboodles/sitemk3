@@ -14,6 +14,7 @@ export type ZIndexDict = {[key: string]: number};
 
 export type WindowState = {
     name: string;
+    ID: string;
     windowShown: boolean;
     windowWidth: number;
     windowHeight: number;
@@ -89,6 +90,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
 
         const currState : WindowState = {
             name: pairName,
+            ID: props.state.ID,
             windowShown: true,
             windowWidth: width,
             windowHeight: height,
@@ -297,7 +299,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
             windowShown: false
         }
 
-        const windowRef = document.getElementById(currState.name) as HTMLElement;
+        const windowRef = document.getElementById(currState.ID) as HTMLElement;
         if(windowRef){
             windowRef.style.opacity = '0';
             setTimeout(() => {
@@ -779,7 +781,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
 
     if (windowShown) {
         return (
-            <div ref={moverRef} className="mover" id={pairName} >
+            <div ref={moverRef} className="mover" id={props.state.ID} >
                 <div className="window" ref={windowRef}>
                     <div ref={resizeRefT} className="resizer resizer-t"></div>
                     <div ref={resizeRefL} className="resizer resizer-l"></div>
@@ -790,7 +792,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                     <div ref={resizeRefBL} className="resizer resizer-bl"/>
                     <div ref={resizeRefBR} className="resizer resizer-br"/>
 
-                    <div className="windowHead" id={`${pairName}Head`}>
+                    <div className="windowHead" id={`${props.state.ID}Head`}>
                         <img src={"/desktopEmulationAssets/window-head-left.png"} className="windowHeadBorder windowHeadBorderLeft"></img>
                         <img src={"/desktopEmulationAssets/window-head-middle.png"} className="windowHeadBorder windowHeadBorderMid"></img>
                         <h1>{pairName}</h1>
@@ -815,7 +817,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
         );
     }else if(!props.unmountOnClose){
         return (
-            <div ref={moverRef} className="mover hidden" id={pairName} >
+            <div ref={moverRef} className="mover hidden" id={props.state.ID} >
                 <div className="window" ref={windowRef}>
                     <div ref={resizeRefT} className="resizer resizer-t"></div>
                     <div ref={resizeRefL} className="resizer resizer-l"></div>
@@ -826,7 +828,7 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                     <div ref={resizeRefBL} className="resizer resizer-bl"/>
                     <div ref={resizeRefBR} className="resizer resizer-br"/>
 
-                    <div className="windowHead" id={`${pairName}Head`}>
+                    <div className="windowHead" id={`${props.state.ID}Head`}>
                         <img src={"/desktopEmulationAssets/window-head-left.png"} className="windowHeadBorder windowHeadBorderLeft"></img>
                         <img src={"/desktopEmulationAssets/window-head-middle.png"} className="windowHeadBorder windowHeadBorderMid"></img>
                         <h1>{pairName}</h1>

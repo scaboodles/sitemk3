@@ -72,6 +72,7 @@ export type IDFileProps = {
     onDoubleClick: () => void;
     ID: string;
 }
+
 export const IDPdf  = (props: IDFileProps) => {
     useEffect( () => {
         const icon = document.getElementById(props.ID);
@@ -82,11 +83,65 @@ export const IDPdf  = (props: IDFileProps) => {
             }, 50);
         }
     },[]);
-
     return(
         <div className="named icon" onDoubleClick={props.onDoubleClick} id={props.ID} >
             <img src={getSrc("txt-icon")} alt="pdf icon"/>
             <h1>{`${props.name}.pdf`}</h1>
+        </div>
+    );
+};
+
+export type RefFileProps = {
+    name: string;
+    onDoubleClick: () => void;
+    ID: string;
+    mountedRef:React.RefObject<boolean>;
+}
+
+export const RefPDF  = (props: RefFileProps) => {
+    useEffect( () => {
+        const icon = document.getElementById(props.ID);
+        if(icon){
+            if(props.mountedRef.current){
+                icon.style.transition = "opacity 0s";
+                icon.style.opacity = '1';
+            }else{
+                icon.style.opacity = '0';
+                setTimeout(() => {
+                    icon.style.opacity = '1';
+                    (props.mountedRef as unknown as { current: boolean }).current = true; // cursed
+                }, 50);
+            }
+        }
+    },[]);
+    return(
+        <div className="named icon" onDoubleClick={props.onDoubleClick} id={props.ID} >
+            <img src={getSrc("txt-icon")} alt="pdf icon"/>
+            <h1>{`${props.name}.pdf`}</h1>
+        </div>
+    );
+};
+
+export const RefFolder  = (props: RefFileProps) => {
+    useEffect( () => {
+        const icon = document.getElementById(props.ID);
+        if(icon){
+            if(props.mountedRef.current){
+                icon.style.transition = "opacity 0s";
+                icon.style.opacity = '1';
+            }else{
+                icon.style.opacity = '0';
+                setTimeout(() => {
+                    icon.style.opacity = '1';
+                    (props.mountedRef as unknown as { current: boolean }).current = true; // cursed
+                }, 50);
+            }
+        }
+    },[]);
+    return(
+        <div className="named icon" onDoubleClick={props.onDoubleClick} id={props.ID}>
+            <img src={getSrc("folder")} alt="folder icon"/>
+            <h1>{props.name}</h1>
         </div>
     );
 };
@@ -128,3 +183,30 @@ export const IDHtml = (props: IDFileProps) => {
         </div>
     );
 };
+
+export const IDMov = (props: IDFileProps) => {
+    useEffect( () => {
+        const icon = document.getElementById(props.ID);
+        if(icon){
+            icon.style.opacity = '0';
+            setTimeout(() => {
+                icon.style.opacity = '1';
+            }, 50);
+        }
+    },[]);
+
+    return(
+        <div className="named icon" onDoubleClick={props.onDoubleClick} id={props.ID}>
+            <img src={getSrc("mov-icon")} alt="html icon"/>
+            <h1>{`${props.name}.mov`}</h1>
+        </div>
+    );
+};
+
+export type GhostProps= {
+    onDoubleClick: () => void;
+    ID: string;
+}
+export const GhostIcon = (props:GhostProps) => {
+    return <div className="ghost" onDoubleClick={props.onDoubleClick} id={props.ID}/>
+}
