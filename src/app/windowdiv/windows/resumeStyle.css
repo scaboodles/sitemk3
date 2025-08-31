@@ -12,3 +12,7 @@
 .fakeButton:hover{
     background-color: lightgray;
 }
+
+.react-pdf__Page__annotations .linkAnnotation > a {
+    cursor: url("/desktopEmulationAssets/pointer-clickable.png"), auto !important;
+}

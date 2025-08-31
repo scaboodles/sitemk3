@@ -368,7 +368,7 @@ const VizDemo = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
 const TetrisDemo = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
     const tetrisStart : WindowState = {
         name: 'Tetris Demo',
-        ID: "vizWindow",
+        ID: "tetrisWindow",
         windowShown: false,
         windowWidth: defaultDimensions.width,
         windowHeight: defaultDimensions.height,
@@ -442,6 +442,122 @@ export const Desktop = () => {
 
             <VizDemo getMaxZ={getMaxZ}/>
             <TetrisDemo getMaxZ={getMaxZ}/>
+        </div>
+    )
+}
+
+const StatusBar = () => {
+    const [time, setTime] = React.useState('');
+
+    React.useEffect(() => {
+        const updateTime = () => {
+            const now = new Date();
+            setTime(now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        };
+
+        updateTime();
+        const interval = setInterval(updateTime, 1000);
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <div className="status-bar">
+            <div className="status-left">
+                <span className="carrier">•••••</span>
+            </div>
+            <div className="status-center">
+                <span className="time">{time}</span>
+            </div>
+            <div className="status-right">
+                <span className="battery">100%</span>
+                <div className="battery-icon"></div>
+            </div>
+        </div>
+    );
+};
+
+const HomeButton = ({ onPress }: { onPress: () => void }) => {
+    return (
+        <div className="home-button-container">
+            <button className="home-button" onClick={onPress}>
+                <div className="home-button-inner"></div>
+            </button>
+        </div>
+    );
+};
+
+
+const MobileApp = ({ children, isOpen, onClose }: { children: React.ReactNode; isOpen: boolean; onClose: () => void }) => {
+    return (
+        <div className={`mobile-app ${isOpen ? 'open' : ''}`}>
+            <div className="mobile-app-content">
+                {children}
+            </div>
+        </div>
+    );
+};
+
+export const MobileDesktop = () => {
+    const [openApp, setOpenApp] = React.useState<'home' | 'about' | 'projects' | 'resume'>('home');
+
+    const closeApp = () => setOpenApp('home');
+
+    return(
+        <div id='MobileDesktop'>
+            <StatusBar />
+            
+            <div className={`mobile-home ${openApp === 'home' ? 'visible' : 'hidden'}`}>
+                <div className="mobile-apps-grid">
+                    <div className="mobile-app-icon" onClick={() => setOpenApp('about')}>
+                        <div className="app-icon about-icon">
+                            <img src="/desktopEmulationAssets/html-icon.png" alt="about" />
+                        </div>
+                        <span className="app-label">About</span>
+                    </div>
+                    
+                    <div className="mobile-app-icon" onClick={() => setOpenApp('projects')}>
+                        <div className="app-icon projects-icon">
+                            <img src="/desktopEmulationAssets/folder.png" alt="projects" />
+                        </div>
+                        <span className="app-label">Projects</span>
+                    </div>
+                    
+                    <div className="mobile-app-icon" onClick={() => setOpenApp('resume')}>
+                        <div className="app-icon resume-icon">
+                            <img src="/desktopEmulationAssets/txt-icon.png" alt="resume" />
+                        </div>
+                        <span className="app-label">Resume</span>
+                    </div>
+
+                    <div className="mobile-app-icon" onClick={() => setOpenApp('resume')}>
+                        <div className="app-icon resume-icon">
+                            <a href='https://github.com/scaboodles' target="_blank"><img src="/desktopEmulationAssets/gh-icon.png" alt="github link"></img></a>
+                        </div>
+                        <span className="app-label">GitHub</span>
+                    </div>
+
+                    <div className="mobile-app-icon" onClick={() => setOpenApp('resume')}>
+                        <div className="app-icon resume-icon">
+                            <a href='https://www.linkedin.com/in/owen-wolff-061a85229/' target="_blank"><img src="/desktopEmulationAssets/linkedInIcon.png" alt="linked in link"></img></a>
+                        </div>
+                        <span className="app-label">LinkedIn</span>
+                    </div>
+                </div>
+            </div>
+
+            <MobileApp isOpen={openApp === 'about'} onClose={closeApp}>
+                <LandingWindow/>
+            </MobileApp>
+            
+            <MobileApp isOpen={openApp === 'projects'} onClose={closeApp}>
+                <ProjectsGuts/>
+            </MobileApp>
+            
+            <MobileApp isOpen={openApp === 'resume'} onClose={closeApp}>
+                <ResumeGuts/>
+            </MobileApp>
+
+            <HomeButton onPress={closeApp} />
         </div>
     )
 }

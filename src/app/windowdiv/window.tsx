@@ -377,8 +377,8 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 const styles = window.getComputedStyle(resizableEle);
                 resizableEle.style.left = styles.left;
                 resizableEle.style.right = "";
-                document.addEventListener("mousemove", onMouseMoveRightResize);
-                document.addEventListener("mouseup", onMouseUpRightResize);
+                document.addEventListener("mousemove", onMouseMoveRightResize, { passive: true });
+                document.addEventListener("mouseup", onMouseUpRightResize, { passive: true });
             }
 
             //left
@@ -410,8 +410,8 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 const styles = window.getComputedStyle(resizableEle);
                 resizableEle.style.right = styles.right;
                 resizableEle.style.left = "";
-                document.addEventListener("mousemove", onMouseMoveLeftResize);
-                document.addEventListener("mouseup", onMouseUpLeftResize);
+                document.addEventListener("mousemove", onMouseMoveLeftResize, { passive: true });
+                document.addEventListener("mouseup", onMouseUpLeftResize, { passive: true });
             }
             
             //top
@@ -443,8 +443,8 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 y = event.clientY;
                 resizableEle.style.bottom = styles.bottom;
                 resizableEle.style.top = "";
-                document.addEventListener("mousemove", onMouseMoveTopResize);
-                document.addEventListener("mouseup", onMouseUpTopResize);
+                document.addEventListener("mousemove", onMouseMoveTopResize, { passive: true });
+                document.addEventListener("mouseup", onMouseUpTopResize, { passive: true });
 
                 if(windowRef.current){
                     windowRef.current.classList.add("resizingTop");
@@ -474,8 +474,8 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 const styles = window.getComputedStyle(resizableEle);
                 resizableEle.style.top = styles.top;
                 resizableEle.style.bottom = "";
-                document.addEventListener("mousemove", onMouseMoveBottomResize);
-                document.addEventListener("mouseup", onMouseUpBottomResize);
+                document.addEventListener("mousemove", onMouseMoveBottomResize, { passive: true });
+                document.addEventListener("mouseup", onMouseUpBottomResize, { passive: true });
             }
 
             //Top Left
@@ -536,8 +536,8 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 resizableEle.style.left = ""; 
                 resizableEle.style.right = styles.right;
 
-                document.addEventListener("mousemove", onMouseMoveTopLeftResize);
-                document.addEventListener("mouseup", onMouseUpTopLeftResize);
+                document.addEventListener("mousemove", onMouseMoveTopLeftResize, { passive: true });
+                document.addEventListener("mouseup", onMouseUpTopLeftResize, { passive: true });
             }
 
             //Top Right
@@ -593,8 +593,8 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 resizableEle.style.left = styles.left; 
                 resizableEle.style.right = "";
 
-                document.addEventListener("mousemove", onMouseMoveTopRightResize);
-                document.addEventListener("mouseup", onMouseUpTopRightResize);
+                document.addEventListener("mousemove", onMouseMoveTopRightResize, { passive: true });
+                document.addEventListener("mouseup", onMouseUpTopRightResize, { passive: true });
             }
 
             //Bot Right
@@ -642,8 +642,8 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 resizableEle.style.left = styles.left; 
                 resizableEle.style.right = "";
 
-                document.addEventListener("mousemove", onMouseMoveBottomRightResize);
-                document.addEventListener("mouseup", onMouseUpBottomRightResize);
+                document.addEventListener("mousemove", onMouseMoveBottomRightResize, { passive: true });
+                document.addEventListener("mouseup", onMouseUpBottomRightResize, { passive: true });
             }
 
             //Bot left
@@ -699,8 +699,8 @@ export const WindowDiv = React.memo((props: WindowProps) => {
                 resizableEle.style.left = ""; 
                 resizableEle.style.right = styles.right;
 
-                document.addEventListener("mousemove", onMouseMoveBottomLeftResize);
-                document.addEventListener("mouseup", onMouseUpBottomLeftResize);
+                document.addEventListener("mousemove", onMouseMoveBottomLeftResize, { passive: true });
+                document.addEventListener("mouseup", onMouseUpBottomLeftResize, { passive: true });
             }
 
             //add event listeners

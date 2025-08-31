@@ -83,7 +83,7 @@ export function ProjectsGuts(){
                     <div className="textContainer">
                         <p>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            Here&apos;s a short demo of an ASCII Tetris clone that I built in C. It&apos;s built with ncurses, hence the name.
+                            Here&apos;s a short demo of an ASCII Tetris clone that I built in C with ncurses.
                             <br/>
                             <br/>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
