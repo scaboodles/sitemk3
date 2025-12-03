@@ -7,6 +7,7 @@ import { NOPFolder, NOPPdf } from '../filetypes';
 export const LandingWindow = () => {
     const projectFinger = useRef<HTMLDivElement>(null);
     const resumeFinger = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
 
     const [resumePos, setResumePos] = useState({x: 0, y: 0});
     const [resumeShown, toggleResume] = useState(true);
@@ -64,6 +65,12 @@ export const LandingWindow = () => {
             }
             const newPos = {x:getNumFromPx(styles.left) + widthOffset, y:getNumFromPx(styles.top) + heightOffset};
             setProjectsPos(newPos);
+        };
+
+        const recalculatePointers = () => {
+            console.log('recalculatePointers called on scroll');
+            updateResumePosition();
+            updateProjectsPosition();
         };
 
         const checkWidth = () => {
@@ -148,10 +155,21 @@ export const LandingWindow = () => {
             attributes: true 
         });
 
+        const scrollableParent = contentRef.current?.parentElement;
+        if (scrollableParent) {
+            console.log('Adding scroll listener to scrollable parent');
+            scrollableParent.addEventListener('scroll', recalculatePointers);
+        }
+
         return () => {
             resumeObserver.disconnect();
             selfObserver.disconnect();
+            selfObserverPos.disconnect();
             projectsObserver.disconnect();
+            
+            if (scrollableParent) {
+                scrollableParent.removeEventListener('scroll', recalculatePointers);
+            }
         };
     }, [])
 
@@ -224,7 +242,7 @@ export const LandingWindow = () => {
     const aboutId = altRender ? "aboutAlt" : "about"
 
     return(
-        <div id='overrideGuts'>
+        <div id='overrideGuts' ref={contentRef}>
             <div id='header'>
                 <h1>Hello!</h1>
             </div>

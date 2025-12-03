@@ -219,7 +219,7 @@ const ProjectsWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
 
 const ResumeWindow = React.memo( ({ getMaxZ }: { getMaxZ: () => number }) => {
     const resumeStart : WindowState = {
-        name: 'Resume Fall 2024',
+        name: 'Resume Fall 2025',
         ID: 'resumeWindow',
         windowShown: false,
         windowWidth: defaultDimensions.width,
@@ -302,7 +302,7 @@ const Player: React.FC<PlayerProps> = ({ videoId, vidName }) => {
     return (
         <div className="youtube-wrapper">
         <iframe
-            src={`https://www.youtube.com/embed/${videoId}`}
+            src={`https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0&iv_load_policy=3&disablekb=1`}
             title={vidName}
             frameBorder="0"
             allow="accelerometer; clipboard-write; encrypted-media; gyroscope;"
